@@ -39,4 +39,4 @@ db_reset:
 	docker-compose --env-file .env -f ${compose_file_path} exec nest npx prisma migrate reset --schema=database/schema.prisma
 
 db_migrate:
-	docker-compose --env-file .env -f ${compose_file_path} exec nest npx prisma generate --schema=database/schema.prisma
+	docker-compose --env-file .env -f ${compose_file_path} exec nest npx prisma migrate dev --schema=database/schema.prisma

@@ -1,0 +1,106 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-arm64-openssl-1.1.x"]
+}
+
+//
+
+model User {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  email    String? @unique
+  username String? @unique
+  token    String  @unique
+
+  ouathProviders        OauthProvider[]
+  donations             Donation[]
+  donationAlertsWidgets DonationAlertWidget[]
+}
+
+//
+
+enum OauthProviderType {
+  twitch
+  youtube
+}
+
+model OauthProvider {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  accessToken  String
+  refreshToken String
+  profileId    String
+  type         OauthProviderType
+
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
+}
+
+// 
+
+enum PaymentSystem {
+  fondy
+  manual
+}
+
+enum PaymentStatus {
+  idle
+  progress
+  success
+  fail
+}
+
+model Donation {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  currency              String
+  amount                Int
+  senderName            String
+  message               String
+  paymentSystem         PaymentSystem
+  paymentStatus         PaymentStatus @default(idle)
+  paymentData           Json?
+  notificationWasPlayed Boolean       @default(false)
+
+  recipient   User @relation(fields: [recipientId], references: [id])
+  recipientId Int
+}
+
+//
+
+model DonationAlertWidget {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  text           String
+  minAmount      Int?
+  maxAmount      Int?
+  specificAmount Int?
+
+  user                User              @relation(fields: [userId], references: [id])
+  userId              Int
+  alertWidgetsGroup   AlertWidgetsGroup @relation(fields: [alertWidgetsGroupId], references: [id])
+  alertWidgetsGroupId Int
+}
+
+//  
+
+model AlertWidgetsGroup {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  donationAlertWidgets DonationAlertWidget[]
+}
