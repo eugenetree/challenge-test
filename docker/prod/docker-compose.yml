@@ -1,0 +1,25 @@
+version: '3.4'
+services:
+  nest:
+    container_name: donaton
+    build:
+      context: ../../
+      dockerfile: docker/prod/Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ../../:/app
+  mysql:
+    container_name: donaton
+    restart: always
+    image: mysql:5.7
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+      - MYSQL_DATABASE=${DB_NAME}
+    volumes:
+      - db:/var/lib/mysql
+    ports:
+    - "3307:3306"
+volumes:
+  db:

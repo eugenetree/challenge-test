@@ -1,0 +1,37 @@
+version: '3.8'
+services:
+  nest:
+    container_name: donaton_nest
+    build:
+      context: ../../
+      dockerfile: docker/dev/Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ../../:/app
+  mysql:
+    # needed only for dev purposes, to make it work for mac os  
+    platform: linux/amd64
+    container_name: donaton_db 
+    restart: always
+    image: mysql:5.7
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+      - MYSQL_DATABASE=${DB_NAME}
+    volumes:
+      - db:/var/lib/mysql
+    ports:
+    - "3307:3306"
+  ngrok:
+    image: shkoliar/ngrok:latest
+    ports:
+      - 4551:4551
+    links:
+      - nest
+    environment:
+      - DOMAIN=nest
+      - PORT=3000
+      - AUTH_TOKEN=1jBv7lLFgqAS6Sl6ZSCzrKgjvjZ_7tgy9Wiu7biSDbVz9fAdn
+volumes:
+  db:
