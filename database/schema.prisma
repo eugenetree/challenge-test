@@ -11,7 +11,7 @@ generator client {
 //
 
 model User {
-  id        Int      @id @default(autoincrement())
+  id        String   @id
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -32,7 +32,7 @@ enum OauthProviderType {
 }
 
 model OauthProvider {
-  id        Int      @id @default(autoincrement())
+  id        String   @id
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -41,8 +41,8 @@ model OauthProvider {
   profileId    String
   type         OauthProviderType
 
-  user   User @relation(fields: [userId], references: [id])
-  userId Int
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
 }
 
 // 
@@ -60,7 +60,7 @@ enum PaymentStatus {
 }
 
 model Donation {
-  id        Int      @id @default(autoincrement())
+  id        String   @id
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -70,17 +70,17 @@ model Donation {
   message               String
   paymentSystem         PaymentSystem
   paymentStatus         PaymentStatus @default(idle)
-  paymentData           Json?
+  paymentData           String?
   notificationWasPlayed Boolean       @default(false)
 
-  recipient   User @relation(fields: [recipientId], references: [id])
-  recipientId Int
+  recipient   User   @relation(fields: [recipientId], references: [id])
+  recipientId String
 }
 
 //
 
 model DonationAlertWidget {
-  id        Int      @id @default(autoincrement())
+  id        String   @id
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -90,15 +90,15 @@ model DonationAlertWidget {
   specificAmount Int?
 
   user                User              @relation(fields: [userId], references: [id])
-  userId              Int
+  userId              String
   alertWidgetsGroup   AlertWidgetsGroup @relation(fields: [alertWidgetsGroupId], references: [id])
-  alertWidgetsGroupId Int
+  alertWidgetsGroupId String
 }
 
 //  
 
 model AlertWidgetsGroup {
-  id        Int      @id @default(autoincrement())
+  id        String   @id
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
