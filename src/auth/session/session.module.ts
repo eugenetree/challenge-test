@@ -1,7 +1,7 @@
 import * as session from 'express-session';
 import { Module, NestModule } from '@nestjs/common';
 
-import { SessionService } from './infrastructure/session.service';
+import { SessionService } from './session.service';
 
 @Module({
   exports: [SessionService],

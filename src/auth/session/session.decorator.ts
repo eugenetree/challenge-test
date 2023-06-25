@@ -8,5 +8,3 @@ export const UserId = createParamDecorator(
     return typeof userId === "number" ? userId : undefined;
   },
 );
-
-export type UserId = Number | undefined;

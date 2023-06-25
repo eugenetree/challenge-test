@@ -11,7 +11,7 @@ generator client {
 //
 
 model User {
-  id        String   @id
+  id        String   @id @default(uuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -32,7 +32,7 @@ enum OauthProviderType {
 }
 
 model OauthProvider {
-  id        String   @id
+  id        String   @id @default(uuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -49,18 +49,17 @@ model OauthProvider {
 
 enum PaymentSystem {
   fondy
-  manual
+  test
 }
 
 enum PaymentStatus {
-  idle
-  progress
+  notPaid
   success
   fail
 }
 
 model Donation {
-  id        String   @id
+  id        String   @id @default(uuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -69,7 +68,7 @@ model Donation {
   senderName            String
   message               String
   paymentSystem         PaymentSystem
-  paymentStatus         PaymentStatus @default(idle)
+  paymentStatus         PaymentStatus @default(notPaid)
   paymentData           String?
   notificationWasPlayed Boolean       @default(false)
 
@@ -80,7 +79,7 @@ model Donation {
 //
 
 model DonationAlertWidget {
-  id        String   @id
+  id        String   @id @default(uuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -98,7 +97,7 @@ model DonationAlertWidget {
 //  
 
 model AlertWidgetsGroup {
-  id        String   @id
+  id        String   @id @default(uuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

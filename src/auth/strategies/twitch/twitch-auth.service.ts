@@ -1,13 +1,13 @@
 import { SettingsService } from "src/_common/settings/settings.service";
-import { TwitchAuthApiService } from "../infrastructure/twtch-auth-api.service";
 import { LoggerService } from "src/_common/logger/logger.service";
-import { UserRepository } from "src/user/domain/user.repository.type";
-import { OauthProviderRepository } from "src/oauth-provider/domain/oauth-provider.repository.type";
 import { Injectable } from "@nestjs/common";
-import { UserService } from "src/user/application/user.service";
-import { User } from "src/user/domain/user";
+import { User } from "src/user/user";
 import { ID } from "src/_common/types";
-import { OauthProvider } from "src/oauth-provider/domain/oauth-provider";
+import { TwitchAuthApiService } from "./twtch-auth-api.service";
+import { UserRepository } from "src/user/user.repository";
+import { UserService } from "src/user/user.service";
+import { OauthProviderRepository } from "src/oauth-provider/oauth-provider.repository";
+import { OauthProvider } from "src/oauth-provider/oauth-provider";
 
 @Injectable()
 export class TwitchAuthService {

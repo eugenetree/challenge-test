@@ -21,6 +21,3 @@ export class User {
 		Object.assign(this, params);
 	}
 };
-
-// preparation in advance for model expanding in future
-export type UserFields = Omit<User, ''>;

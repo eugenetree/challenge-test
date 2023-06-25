@@ -1,10 +1,11 @@
 import { Injectable } from "@nestjs/common";
 import * as crypto from "crypto";
-import { UserRepository } from "../domain/user.repository.type";
-import { OauthProviderRepository } from "src/oauth-provider/domain/oauth-provider.repository.type";
 import { DatabaseService } from "src/_common/database/database.service";
-import { OauthProvider } from "src/oauth-provider/domain/oauth-provider";
-import { User } from "../domain/user";
+import { User } from "./user";
+import { UserRepository } from "./user.repository";
+import { OauthProviderRepository } from "src/oauth-provider/oauth-provider.repository";
+import { OauthProvider } from "src/oauth-provider/oauth-provider";
+import { ID } from "src/_common/types";
 
 @Injectable()
 export class UserService {

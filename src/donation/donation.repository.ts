@@ -1,31 +1,31 @@
 import { Injectable } from "@nestjs/common";
 import { Donation as DonationDbEntity } from "@prisma/client";
 import { PrismaService } from "src/_common/database/prisma.service";
-import { Donation } from "../domain/donation";
-import { DonationRepository } from "../domain/donation.repository.type";
+import { Donation } from "./donation";
+import { ID } from "src/_common/types";
 
 @Injectable()
-export class BaseDonationRepository implements DonationRepository {
+export class DonationRepository {
 	constructor(private readonly prisma: PrismaService) { }
 
-	create: DonationRepository['create'] = async (payload) => {
+	create = async ({ data }: { data: Donation }): Promise<Donation> => {
 		const createdDonation = await this.prisma.donation.create({
-			data: this.fromModelToDbEntity(payload.data),
+			data: this.fromModelToDbEntity(data),
 		});
 
 		return new Donation(this.fromDbEntityToModel(createdDonation));
 	}
 
-	findOne: DonationRepository['findOne'] = async ({ where }) => {
-		const foundDonation = await this.prisma.donation.findFirst({ where });
+	find = async (id: ID): Promise<Donation | null> => {
+		const foundDonation = await this.prisma.donation.findFirst({ where: { id } });
 		return foundDonation ?
 			new Donation(this.fromDbEntityToModel(foundDonation)) : null;
 	}
 
-	updateOne: DonationRepository['updateOne'] = async ({ data }) => {
+	update = async (id: ID, { data }: { data: Partial<Omit<Donation, 'id'>> }) => {
 		const updatedDonation = await this.prisma.donation.update({
 			data,
-			where: { id: data.id }
+			where: { id }
 		});
 
 		return new Donation(this.fromDbEntityToModel(updatedDonation));

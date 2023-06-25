@@ -1,18 +1,17 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/_common/database/prisma.service";
-import { OauthProviderRepository } from "../domain/oauth-provider.repository.type";
-import { OauthProvider } from "../domain/oauth-provider";
+import { OauthProvider } from "./oauth-provider";
 
 @Injectable()
-export class BaseOauthProviderRepository implements OauthProviderRepository {
+export class OauthProviderRepository {
 	constructor(private readonly prisma: PrismaService) { }
 
-	create: OauthProviderRepository['create'] = async ({ data }) => {
+	create = async ({ data }: { data: OauthProvider }): Promise<OauthProvider> => {
 		const createdOauthProvider = await this.prisma.oauthProvider.create({ data });
 		return new OauthProvider(createdOauthProvider);
 	}
 
-	findOne: OauthProviderRepository['findOne'] = async ({ where }) => {
+	findOne = async ({ where }: { where: Partial<OauthProvider> }): Promise<OauthProvider | null> => {
 		const data = await this.prisma.oauthProvider.findFirst({ where });
 		return data ? new OauthProvider(data) : null;
 	}

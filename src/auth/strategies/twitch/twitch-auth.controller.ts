@@ -1,10 +1,10 @@
 import { Controller, Get, Query, Res, ServiceUnavailableException, Session, UseFilters } from "@nestjs/common";
 import { Response } from "express";
 
-import { TwitchAuthService } from '../application/twitch-auth.service';
-import { SessionService } from "src/auth/session/infrastructure/session.service";
 import { TwitchAuthExceptionsFilter } from "./twitch-auth.filter";
 import { LoggerService } from "src/_common/logger/logger.service";
+import { TwitchAuthService } from "./twitch-auth.service";
+import { SessionService } from "src/auth/session/session.service";
 import { TwitchAuthCallbackDto, TwitchAuthInitDto } from "./twitch-auth.dto";
 
 @UseFilters(TwitchAuthExceptionsFilter)

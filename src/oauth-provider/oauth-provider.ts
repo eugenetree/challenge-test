@@ -25,6 +25,3 @@ export class OauthProvider {
 		Object.assign(this, params);
 	}
 };
-
-// preparation in advance for model expanding in future
-export type OauthProviderFields = Omit<OauthProvider, ''>;

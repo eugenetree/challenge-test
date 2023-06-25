@@ -1,11 +1,11 @@
 import { Injectable } from "@nestjs/common";
-import { DonationRepository } from "src/donation/domain/donation.repository.type";
-import { Donation, DonationInputParams } from "src/donation/domain/donation";
+import { Donation, DonationInputParams } from "src/donation/donation";
 import { LoggerService } from "src/_common/logger/logger.service";
 import { PaymentService } from "src/_common/payment/payment.service";
 import { UrlUtils } from "src/_common/utils/url-builder";
 import { SettingsService } from "src/_common/settings/settings.service";
 import { ID } from "src/_common/types";
+import { DonationRepository } from "src/donation/donation.repository";
 
 @Injectable()
 export class DonationPaymentService {
@@ -17,31 +17,34 @@ export class DonationPaymentService {
 		private readonly urlUtils: UrlUtils,
 	) { }
 
-	async createRedirectUrlToPaymentPage({
-		donationInput,
+	async createPaymentUrl({
+		donationId,
 		redirectUrlAfterPayment,
 		callbackUrlPathAfterPayment,
 	}: {
-		donationInput: Omit<DonationInputParams, 'id'>,
+		donationId: ID,
 		redirectUrlAfterPayment: string,
 		callbackUrlPathAfterPayment: string,
 	}): Promise<string> {
-		const createdDonation = await this.donationRepository.create({
-			data: new Donation(donationInput),
+		const donation = await this.donationRepository.findOne({
+			where: { id: donationId },
 		});
+
+		if (!donation) {
+			throw new Error(`Donation with id ${donationId} was not found`);
+		}
 
 		this.loggerService.info(
 			DonationPaymentService.name,
-			`Donation record was created: ${JSON.stringify(createdDonation)}.
-			Now generating redirect url for payment page for created donation.`
+			`Generating redirect url for payment page for created donation.`
 		)
 
-		const { id, amount, currency } = createdDonation;
+		const { id, amount, currency, message } = donation;
 		const redirectUrl = await this.paymentService.getRedirectUrlToPaymentPage({
 			orderId: id,
 			currency,
 			amount,
-			messageForPayer: 'Donation',
+			messageForPayer: message,
 			redirectUrlAfterPayment: this.urlUtils.buildUrl({
 				url: redirectUrlAfterPayment,
 				query: { id },
@@ -53,16 +56,5 @@ export class DonationPaymentService {
 		});
 
 		return redirectUrl;
-	}
-
-	async handleSuccessCallback({ id, paymentData }: { id: ID, paymentData: Record<string, unknown> }) {
-		const donation = await this.donationRepository.findOne({ where: { id } });
-
-		if (!donation) {
-			throw new Error(`Donation with id ${id} was not found`);
-		}
-
-		donation.markSuccessfulPayment({ paymentData });
-		await this.donationRepository.updateOne({ data: donation });
 	}
 }
