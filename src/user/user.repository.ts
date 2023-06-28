@@ -9,15 +9,15 @@ import { ID } from "src/_common/types";
 export class UserRepository {
 	constructor(private readonly prisma: PrismaService) { }
 
-	findById = async (id: ID): Promise<User | null> => {
-		const userData = await this.prisma.user.findFirst({ where: { id } });
+	findOne = async ({ where }: { where: Partial<User> }): Promise<User | null> => {
+		const userData = await this.prisma.user.findFirst({ where });
 		return userData ? new User(userData) : null;
 	}
 
-	findByOauthProviderId =
-		async (id: ID): Promise<User | null> => {
+	findOneByOauthProvider =
+		async ({ where }: { where: Partial<OauthProvider> }): Promise<User | null> => {
 			const userData = await this.prisma.user.findFirst({
-				where: { ouathProviders: { some: { id } } }
+				where: { ouathProviders: { some: where } }
 			})
 
 			return userData ? new User(userData) : null;

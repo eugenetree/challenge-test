@@ -16,13 +16,13 @@ export class DonationRepository {
 		return new Donation(this.fromDbEntityToModel(createdDonation));
 	}
 
-	find = async (id: ID): Promise<Donation | null> => {
-		const foundDonation = await this.prisma.donation.findFirst({ where: { id } });
+	findOne = async ({ where }: { where: Partial<Donation> }): Promise<Donation | null> => {
+		const foundDonation = await this.prisma.donation.findFirst({ where });
 		return foundDonation ?
 			new Donation(this.fromDbEntityToModel(foundDonation)) : null;
 	}
 
-	update = async (id: ID, { data }: { data: Partial<Omit<Donation, 'id'>> }) => {
+	updateOne = async (id: ID, { data }: { data: Partial<Omit<Donation, 'id'>> }) => {
 		const updatedDonation = await this.prisma.donation.update({
 			data,
 			where: { id }
