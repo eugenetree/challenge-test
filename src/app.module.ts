@@ -7,6 +7,7 @@ import { OauthProviderModule } from './oauth-provider/oauth-provide.module';
 import { AuthModule } from './auth/auth.module';
 import { DonationModule } from './donation/donation.module';
 import { DonationPaymentModule } from './donation-payment/donation-payment.module';
+import { SocketModule } from './_common/socket/socket.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { DonationPaymentModule } from './donation-payment/donation-payment.modul
     AuthModule,
     DonationModule,
     DonationPaymentModule,
+    SocketModule,
   ],
   controllers: [],
   providers: [
