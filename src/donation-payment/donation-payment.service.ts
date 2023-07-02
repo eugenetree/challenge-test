@@ -1,5 +1,4 @@
 import { Injectable } from "@nestjs/common";
-import { Donation, DonationInputParams } from "src/donation/donation";
 import { LoggerService } from "src/_common/logger/logger.service";
 import { PaymentService } from "src/_common/payment/payment.service";
 import { UrlUtils } from "src/_common/utils/url-builder";

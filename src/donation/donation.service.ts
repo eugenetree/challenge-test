@@ -12,6 +12,10 @@ export class DonationService {
 		private readonly userRepository: UserRepository,
 	) { }
 
+	findOne = async ({ where }: { where: Partial<Donation> }) => {
+		return await this.donationRepository.findOne({ where });
+	}
+
 	createRealDonation = async (input: CreateRealDonationDto) => {
 		const recipient = await this.userRepository.findOne({ where: { id: input.recipientId } });
 
@@ -34,7 +38,7 @@ export class DonationService {
 
 	markDonationAsPaid = async (donationId: ID, paymentData: Record<string, unknown>) => {
 		const donation = await this.donationRepository.findOne({ where: { id: donationId } });
-		
+
 		if (!donation) {
 			throw new Error(`Donation with id ${donationId} not found`);
 		};

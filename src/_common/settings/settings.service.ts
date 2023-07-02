@@ -13,7 +13,7 @@ const variablesSchema = z.object({
 	DONATION_CIPHER_IV: z.string(),
 });
 
-export class SettingsService implements z.infer<typeof variablesSchema>{
+export class SettingsService implements z.input<typeof variablesSchema>{
 	ENV: "development" | "production";
 	DB_URL: string;
 	DB_ROOT_PASSWORD: string;

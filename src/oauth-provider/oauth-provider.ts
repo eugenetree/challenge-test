@@ -10,7 +10,7 @@ const paramsSchema = z.object({
 	userId: z.string(),
 });
 
-export type OauthProviderInputParams = z.infer<typeof paramsSchema>;
+type OauthProviderInputParams = z.input<typeof paramsSchema>;
 
 export class OauthProvider {
 	id: ID;

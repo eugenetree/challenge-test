@@ -8,6 +8,10 @@ import { AuthModule } from './auth/auth.module';
 import { DonationModule } from './donation/donation.module';
 import { DonationPaymentModule } from './donation-payment/donation-payment.module';
 import { SocketModule } from './_common/socket/socket.module';
+import { DonationAlertWidgetModule } from './donation-alert-widget/donation-alert-widget.module';
+import { AlertWidgetsGroupModule } from './alert-widgets-group/alert-widgets-group.module';
+import { AppController } from './app.controller';
+import { DonationNotifierModule } from './donation-notifier/donation-notifier.module';
 
 @Module({
   imports: [
@@ -17,9 +21,12 @@ import { SocketModule } from './_common/socket/socket.module';
     AuthModule,
     DonationModule,
     DonationPaymentModule,
+    DonationAlertWidgetModule,
+    AlertWidgetsGroupModule,
     SocketModule,
+    DonationNotifierModule,
   ],
-  controllers: [],
+  controllers: [AppController],
   providers: [
     {
       provide: APP_PIPE,

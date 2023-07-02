@@ -23,6 +23,10 @@ export class UserRepository {
 			return userData ? new User(userData) : null;
 		};
 
+	create = async ({data}: {data: User}): Promise<User> => {
+		return new User(await this.prisma.user.create({ data }));
+	}
+
 	createWithOauthProvider =
 		async ({ data }: { data: { user: User, oauthProvider: OauthProvider } }): Promise<User> => {
 			const { user, oauthProvider } = data;
@@ -30,7 +34,7 @@ export class UserRepository {
 			const createdUser = await this.prisma.user.create({
 				data: {
 					...user,
-					ouathProviders: { create: omit(oauthProvider, ['userId']) },
+					ouathProviders: { create: oauthProvider },
 				}
 			})
 

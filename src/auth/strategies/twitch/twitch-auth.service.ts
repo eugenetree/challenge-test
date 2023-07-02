@@ -6,8 +6,8 @@ import { ID } from "src/_common/types";
 import { TwitchAuthApiService } from "./twtch-auth-api.service";
 import { UserRepository } from "src/user/user.repository";
 import { UserService } from "src/user/user.service";
-import { OauthProviderRepository } from "src/oauth-provider/oauth-provider.repository";
 import { OauthProvider } from "src/oauth-provider/oauth-provider";
+import { OauthProviderService } from "src/oauth-provider/oauth-provider.service";
 
 @Injectable()
 export class TwitchAuthService {
@@ -17,7 +17,7 @@ export class TwitchAuthService {
 		private readonly twitchAuthApiService: TwitchAuthApiService,
 		private readonly userRepository: UserRepository,
 		private readonly userService: UserService,
-		private readonly oauthProviderRepository: OauthProviderRepository,
+		private readonly oauthProviderService: OauthProviderService,
 	) { }
 
 	getUrlToBeginAuth = (
@@ -82,7 +82,7 @@ export class TwitchAuthService {
 	linkProviderToAccount = async ({ code, userId }: { code: string; userId: ID }) => {
 		const { accessToken, refreshToken, profile } = await this.twitchAuthApiService.getDataByOauthCode(code);
 
-		return this.oauthProviderRepository.create({
+		return this.oauthProviderService.create({
 			data: new OauthProvider({
 				accessToken,
 				refreshToken,
