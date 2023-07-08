@@ -1,5 +1,7 @@
 import { WebSocketGateway, OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect, WebSocketServer, SubscribeMessage, MessageBody, ConnectedSocket, } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+import { JoinToRoomEventDto } from './socket.dto';
+import { SocketService } from './socket.service';
 
 @WebSocketGateway({
 	cors: {
@@ -9,7 +11,12 @@ import { Server, Socket } from 'socket.io';
 export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
 	@WebSocketServer() server: Server;
 
+	constructor(
+		private readonly socketService: SocketService,
+	) { }
+
 	afterInit() {
+		this.socketService.initServer(this.server);
 		console.log('socket gateway initialized');
 	}
 
@@ -21,12 +28,15 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 		console.log('client disconnected');
 	}
 
-	@SubscribeMessage('events')
-	handleEvent(
-		@MessageBody() data: string,
-		@ConnectedSocket() client: Socket,
-	): string {
-		console.log('data', data);
-		return data;
+	@SubscribeMessage('JOIN_TO_ROOM')
+	async joinToRoom(
+		@MessageBody() { token, alertWidgetsGroupId }: JoinToRoomEventDto,
+		@ConnectedSocket() client: Socket
+	) {
+		this.socketService.joinToRoom({
+			token,
+			alertWidgetsGroupId,
+			client
+		})
 	}
 }

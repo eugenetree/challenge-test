@@ -3,7 +3,7 @@ import { Response } from "express";
 
 import { TwitchAuthExceptionsFilter } from "./twitch-auth.filter";
 import { LoggerService } from "src/_common/logger/logger.service";
-import { TwitchAuthService } from "./twitch-auth.service";
+import { TwitchAuthUsecase } from "./twitch-auth.usecase";
 import { SessionService } from "src/auth/session/session.service";
 import { TwitchAuthCallbackDto, TwitchAuthInitDto } from "./twitch-auth.dto";
 
@@ -11,7 +11,7 @@ import { TwitchAuthCallbackDto, TwitchAuthInitDto } from "./twitch-auth.dto";
 @Controller('auth/twitch')
 export class TwitchAuthController {
   constructor(
-    private readonly twitchAuthService: TwitchAuthService,
+    private readonly twitchAuthService: TwitchAuthUsecase,
     private readonly sessionService: SessionService,
     private readonly loggerService: LoggerService,
   ) { }

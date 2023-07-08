@@ -1,5 +1,5 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
-import { DonationService } from './donation.service';
+import { DonationUsecase } from './donation.usecase';
 import { UserId } from 'src/auth/session/session.decorator';
 import { ID } from 'src/_common/types';
 import { CreateTestDonationDto, CreateRealDonationDto } from './donation.dto';
@@ -8,14 +8,14 @@ import { AuthSessionGuard } from 'src/auth/auth-session.guard';
 @Controller('donations')
 export class DonationController {
 	constructor(
-		private readonly donationService: DonationService,
+		private readonly donationUsecase: DonationUsecase,
 	) { }
 
 	@Post()
 	async createRealDonation(
 		@Body() dto: CreateRealDonationDto,
 	) {
-		return this.donationService.createRealDonation({ ...dto });
+		return this.donationUsecase.createRealDonation({ ...dto });
 	}
 
 	@UseGuards(AuthSessionGuard)
@@ -24,7 +24,7 @@ export class DonationController {
 		@Body() dto: CreateTestDonationDto,
 		@UserId() userId: ID,
 	) {
-		return this.donationService.createTestDonation({
+		return this.donationUsecase.createTestDonation({
 			...dto,
 			recipientId: userId,
 		})

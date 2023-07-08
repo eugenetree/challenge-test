@@ -1,13 +1,13 @@
 import { Body, Controller, HttpCode, Post, Query, Res } from '@nestjs/common';
-import { DonationPaymentService } from './donation-payment.service';
+import { DonationPaymentUsecase } from './donation-payment.usecase';
 import { CreatePaymentUrlDto, DonationPaymentCallbackBodyDto, DonationPaymentCallbackQueryDto } from './donation-payment.dto';
-import { DonationService } from 'src/donation/donation.service';
+import { DonationUsecase } from 'src/donation/donation.usecase';
 
 @Controller('donations/payment')
 export class DonationPaymentController {
   constructor(
-    private readonly donationPaymentService: DonationPaymentService,
-    private readonly donationService: DonationService,
+    private readonly donationPaymentService: DonationPaymentUsecase,
+    private readonly donationUsecase: DonationUsecase,
   ) { }
 
   @Post()
@@ -29,6 +29,6 @@ export class DonationPaymentController {
     @Body() paymentData: DonationPaymentCallbackBodyDto,
     @Query() { id }: DonationPaymentCallbackQueryDto,
   ) {
-    this.donationService.markDonationAsPaid(id, paymentData);
+    this.donationUsecase.processSuccessfulDonation(id, paymentData);
   }
 }

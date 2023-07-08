@@ -14,9 +14,14 @@ export class DonationAlertWidgetRepository {
 			await this.prisma.donationAlertWidget.create({ data }));
 	}
 
-	findManyByAlertWidgetsGroupIds = async (ids: ID[]): Promise<DonationAlertWidget[]> => {
-		return (await this.prisma.donationAlertWidget.findMany({
-			where: { alertWidgetsGroupId: { in: ids } }, 
-		})).map(data => new DonationAlertWidget(data));
+	findMany = async ({ where }: { where: Partial<DonationAlertWidget> }): Promise<DonationAlertWidget[]> => {
+		const foundWidgets = await this.prisma.donationAlertWidget.findMany({ where });
+		return foundWidgets.map(data => new DonationAlertWidget(data));
 	}
+
+	// findManyByAlertWidgetsGroupIds = async (ids: ID[]): Promise<DonationAlertWidget[]> => {
+	// 	return (await this.prisma.donationAlertWidget.findMany({
+	// 		where: { alertWidgetsGroupId: { in: ids } }, 
+	// 	})).map(data => new DonationAlertWidget(data));
+	// }
 }

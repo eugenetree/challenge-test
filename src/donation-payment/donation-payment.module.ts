@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { DonationPaymentService } from './donation-payment.service';
+import { DonationPaymentUsecase } from './donation-payment.usecase';
 import { DonationPaymentController } from './donation-payment.controller';
 import { LoggerModule } from 'src/_common/logger/logger.module';
 import { DonationModule } from 'src/donation/donation.module';
@@ -9,8 +9,8 @@ import { UtilsModule } from 'src/_common/utils/utils.module';
 
 @Module({
   imports: [LoggerModule, SettingsModule, UtilsModule, DonationModule, PaymentModule],
-  providers: [DonationPaymentService],
-  exports: [DonationPaymentService],
+  providers: [DonationPaymentUsecase],
+  exports: [DonationPaymentUsecase],
 	controllers: [DonationPaymentController],
 })
 export class DonationPaymentModule { }

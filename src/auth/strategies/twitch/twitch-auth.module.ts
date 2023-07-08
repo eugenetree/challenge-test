@@ -6,11 +6,11 @@ import { OauthProviderModule } from "src/oauth-provider/oauth-provide.module";
 import { SettingsModule } from "src/_common/settings/settings.module";
 import { UserModule } from "src/user/user.module";
 import { SessionModule } from "src/auth/session/session.module";
-import { TwitchAuthService } from "./twitch-auth.service";
+import { TwitchAuthUsecase } from "./twitch-auth.usecase";
 
 @Module({
 	imports: [LoggerModule, SettingsModule, OauthProviderModule, UserModule, SessionModule],
-	providers: [TwitchAuthApiService, TwitchAuthService],
+	providers: [TwitchAuthApiService, TwitchAuthUsecase],
 	controllers: [TwitchAuthController],
 })
 export class TwitchAuthModule { }

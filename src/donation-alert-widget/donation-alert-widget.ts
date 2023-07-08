@@ -8,8 +8,8 @@ const paramsSchema = z.object({
 	minAmount: z.number().nullable().optional().default(null),
 	maxAmount: z.number().nullable().optional().default(null),
 	specificAmount: z.number().nullable().optional().default(null),
-	userId: z.string(),
-	alertWidgetsGroupId: z.string(),
+	userId: z.string().optional(),
+	alertWidgetsGroupId: z.string().optional(),
 });
 
 export type DonationAlertWidgetInputParams = z.input<typeof paramsSchema>;

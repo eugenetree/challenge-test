@@ -1,9 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import { User } from "./user";
 import { PrismaService } from "src/_common/database/prisma.service";
-import { omit } from "lodash";
 import { OauthProvider } from "src/oauth-provider/oauth-provider";
-import { ID } from "src/_common/types";
+import { AlertWidgetsGroup } from "src/alert-widgets-group/alert-widgets-group";
+import { DonationAlertWidget } from "src/donation-alert-widget/donation-alert-widget";
 
 @Injectable()
 export class UserRepository {
@@ -23,8 +23,35 @@ export class UserRepository {
 			return userData ? new User(userData) : null;
 		};
 
-	create = async ({data}: {data: User}): Promise<User> => {
+	create = async ({ data }: { data: User }): Promise<User> => {
 		return new User(await this.prisma.user.create({ data }));
+	}
+
+	createUserViaOauthWithDefaults = async ({ data: {
+		user,
+		oauthProvider,
+		alertWidgetsGroup,
+		donationAlertWidget,
+	} }: {
+		data: {
+			user: User,
+			oauthProvider: OauthProvider,
+			alertWidgetsGroup: AlertWidgetsGroup,
+			donationAlertWidget: DonationAlertWidget,
+		}
+	}) => {
+		return new User(await this.prisma.user.create({
+			data: {
+				...user,
+				ouathProviders: { create: oauthProvider },
+				alertWidgetsGroups: {
+					create: {
+						...alertWidgetsGroup,
+						donationAlertWidgets: { create: donationAlertWidget }
+					}
+				},
+			}
+		}))
 	}
 
 	createWithOauthProvider =

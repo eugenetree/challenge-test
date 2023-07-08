@@ -7,17 +7,17 @@ import { TwitchAuthApiService } from "./twtch-auth-api.service";
 import { UserRepository } from "src/user/user.repository";
 import { UserService } from "src/user/user.service";
 import { OauthProvider } from "src/oauth-provider/oauth-provider";
-import { OauthProviderService } from "src/oauth-provider/oauth-provider.service";
+import { OauthProviderRepository } from "src/oauth-provider/oauth-provider.repository";
 
 @Injectable()
-export class TwitchAuthService {
+export class TwitchAuthUsecase {
 	constructor(
 		private readonly settingsService: SettingsService,
 		private readonly loggerService: LoggerService,
 		private readonly twitchAuthApiService: TwitchAuthApiService,
 		private readonly userRepository: UserRepository,
 		private readonly userService: UserService,
-		private readonly oauthProviderService: OauthProviderService,
+		private readonly oauthProviderRepository: OauthProviderRepository,
 	) { }
 
 	getUrlToBeginAuth = (
@@ -50,20 +50,20 @@ export class TwitchAuthService {
 	}
 
 	authenticate = async (code: string): Promise<User> => {
-		this.loggerService.info(TwitchAuthService.name, `Requesting user tokens and data by code: ${code}`)
+		this.loggerService.info(TwitchAuthUsecase.name, `Requesting user tokens and data by code: ${code}`)
 
 		const { accessToken, refreshToken, profile } = await this.twitchAuthApiService.getDataByOauthCode(code);
 
 		const user = await this.userRepository.findOneByOauthProvider({ where: { profileId: profile.id } });
 
 		this.loggerService.info(
-			TwitchAuthService.name,
+			TwitchAuthUsecase.name,
 			`User was found by profileId ${profile.id}: ${JSON.stringify(user)}`
 		);
 
 		if (user) return user;
 
-		const createdUser = await this.userService.createWithOauth({
+		const createdUser = await this.userService.createViaOauth({
 			accessToken,
 			refreshToken,
 			oauthProviderProfileId: profile.id,
@@ -71,7 +71,7 @@ export class TwitchAuthService {
 		})
 
 		this.loggerService.info(
-			TwitchAuthService.name,
+			TwitchAuthUsecase.name,
 			`New user was created: ${JSON.stringify(createdUser)}`
 		);
 
@@ -82,7 +82,7 @@ export class TwitchAuthService {
 	linkProviderToAccount = async ({ code, userId }: { code: string; userId: ID }) => {
 		const { accessToken, refreshToken, profile } = await this.twitchAuthApiService.getDataByOauthCode(code);
 
-		return this.oauthProviderService.create({
+		return this.oauthProviderRepository.create({
 			data: new OauthProvider({
 				accessToken,
 				refreshToken,

@@ -6,7 +6,7 @@ import { ID } from 'src/_common/types';
 import { UserRepository } from 'src/user/user.repository';
 
 @Injectable()
-export class DonationService {
+export class DonationUsecase {
 	constructor(
 		private readonly donationRepository: DonationRepository,
 		private readonly userRepository: UserRepository,
@@ -16,7 +16,7 @@ export class DonationService {
 		return await this.donationRepository.findOne({ where });
 	}
 
-	createRealDonation = async (input: CreateRealDonationDto) => {
+	createRealDonation = async (input: CreateRealDonationDto): Promise<Donation> => {
 		const recipient = await this.userRepository.findOne({ where: { id: input.recipientId } });
 
 		if (!recipient) {
@@ -30,20 +30,20 @@ export class DonationService {
 		})
 	};
 
-	createTestDonation = async (input: CreateTestDonationDto & { recipientId: ID }) => {
-		await this.donationRepository.create({
+	createTestDonation = async (input: CreateTestDonationDto & { recipientId: ID }): Promise<Donation> => {
+		return this.donationRepository.create({
 			data: new Donation({ ...input, paymentSystem: 'test' }),
 		});
 	};
 
-	markDonationAsPaid = async (donationId: ID, paymentData: Record<string, unknown>) => {
+	processSuccessfulDonation = async (donationId: ID, paymentData: Record<string, unknown>): Promise<Donation> => {
 		const donation = await this.donationRepository.findOne({ where: { id: donationId } });
 
 		if (!donation) {
 			throw new Error(`Donation with id ${donationId} not found`);
 		};
 
-		await this.donationRepository.updateOne(donation.id, {
+		return this.donationRepository.updateOne(donation.id, {
 			data: {
 				paymentStatus: 'success',
 				paymentData,

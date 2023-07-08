@@ -7,7 +7,7 @@ const paramsSchema = z.object({
 	refreshToken: z.string(),
 	profileId: z.string(),
 	type: z.enum(['twitch', 'youtube']),
-	userId: z.string(),
+	userId: z.string().optional(),
 });
 
 type OauthProviderInputParams = z.input<typeof paramsSchema>;

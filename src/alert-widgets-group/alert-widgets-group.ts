@@ -4,7 +4,7 @@ import { z } from "zod";
 
 const paramsSchema = z.object({
 	id: z.string().optional(),
-	userId: z.string(),
+	userId: z.string().optional(),
 });
 
 export type AlertWidgetsGroupInputParams = z.input<typeof paramsSchema>;
