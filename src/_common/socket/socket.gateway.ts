@@ -16,7 +16,7 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 	) { }
 
 	afterInit() {
-		this.socketService.initServer(this.server);
+		this.socketService.init(this.server);
 		console.log('socket gateway initialized');
 	}
 

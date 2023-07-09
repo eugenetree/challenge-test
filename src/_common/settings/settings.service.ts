@@ -1,3 +1,4 @@
+import axios from "axios";
 import { z } from "zod";
 
 const variablesSchema = z.object({
@@ -45,4 +46,22 @@ export class SettingsService implements z.input<typeof variablesSchema>{
 			throw new Error(`Some environment variables are missing: ${err}`);
 		}
 	}
+
+	init = async (): Promise<void> =>  {
+    if (this.ENV === 'development') {
+      this.BACK_APP_URL = await this.fetchNgrokUrl();
+    };
+  }
+
+
+  private fetchNgrokUrl = async (): Promise<string> => {
+    const { data } = await axios.get('http://ngrok:4551/api/tunnels');
+
+    const ngrokUrl = data.tunnels[0].public_url;
+    if (!ngrokUrl.includes('ngrok')) {
+      throw new Error('Ngrok url is invalid');
+    }
+
+    return ngrokUrl;
+  };
 }

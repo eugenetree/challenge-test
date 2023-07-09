@@ -16,7 +16,7 @@ export class DonationPaymentController {
   ) {
     const paymentUrl = await this.donationPaymentService.createPaymentUrl({
       ...dto,
-      callbackUrlPathAfterPayment: 'donation-payments/callback',
+      callbackUrlPathAfterPayment: 'donations/payment/callback',
     });
 
     return paymentUrl;

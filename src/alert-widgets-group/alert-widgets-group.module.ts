@@ -5,7 +5,7 @@ import { AlertWidgetsGroupRepository } from "./alert-widgets-group.repository";
 @Module({
   imports: [DatabaseModule],
   providers: [AlertWidgetsGroupRepository],
-  exports: [],
+  exports: [AlertWidgetsGroupRepository],
 	controllers: [],
 })
 export class AlertWidgetsGroupModule { }

@@ -10,7 +10,8 @@ export class AlertWidgetsGroupRepository {
 
 	create = async ({ data }: { data: AlertWidgetsGroup }): Promise<AlertWidgetsGroup> => {
 		return new AlertWidgetsGroup(
-			await this.prisma.alertWidgetsGroup.create({ data }));
+			await this.prisma.alertWidgetsGroup.create({ data })
+		);
 	}
 
 	findMany = async ({ where }: { where: Partial<AlertWidgetsGroup> }): Promise<AlertWidgetsGroup[]> => {

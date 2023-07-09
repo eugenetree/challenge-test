@@ -11,7 +11,7 @@ export class SocketService {
 		private readonly userRepository: UserRepository,
 	) { }
 
-	initServer = (server: Server) => {
+	init = (server: Server) => {
 		this.server = server;
 	}
 

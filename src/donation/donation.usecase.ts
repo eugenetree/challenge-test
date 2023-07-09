@@ -4,12 +4,14 @@ import { DonationRepository } from './donation.repository';
 import { CreateRealDonationDto, CreateTestDonationDto } from './donation.dto';
 import { ID } from 'src/_common/types';
 import { UserRepository } from 'src/user/user.repository';
+import { DonationNotifierService } from 'src/donation-notifier/donation-notifier.service';
 
 @Injectable()
 export class DonationUsecase {
 	constructor(
 		private readonly donationRepository: DonationRepository,
 		private readonly userRepository: UserRepository,
+		private readonly donationNotifierService: DonationNotifierService,
 	) { }
 
 	findOne = async ({ where }: { where: Partial<Donation> }) => {
@@ -36,18 +38,20 @@ export class DonationUsecase {
 		});
 	};
 
-	processSuccessfulDonation = async (donationId: ID, paymentData: Record<string, unknown>): Promise<Donation> => {
+	processSuccessfulDonation = async (donationId: ID, paymentData: Record<string, unknown>): Promise<void> => {
 		const donation = await this.donationRepository.findOne({ where: { id: donationId } });
 
 		if (!donation) {
 			throw new Error(`Donation with id ${donationId} not found`);
 		};
 
-		return this.donationRepository.updateOne(donation.id, {
+		await this.donationRepository.updateOne(donation.id, {
 			data: {
 				paymentStatus: 'success',
 				paymentData,
 			}
 		});
+
+		await this.donationNotifierService.notify(donation.id);
 	}
 }

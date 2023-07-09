@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { Donation as DonationDbEntity } from "@prisma/client";
+import { Donation as DonationDbEntity, Prisma } from "@prisma/client";
 import { PrismaService } from "src/_common/database/prisma.service";
 import { Donation } from "./donation";
 import { ID } from "src/_common/types";
@@ -10,7 +10,10 @@ export class DonationRepository {
 
 	create = async ({ data }: { data: Donation }): Promise<Donation> => {
 		const createdDonation = await this.prisma.donation.create({
-			data: this.fromModelToDbEntity(data),
+			data: {
+				...data,
+				paymentData: data.paymentData ? JSON.stringify(data.paymentData) : null,
+			},
 		});
 
 		return new Donation(this.fromDbEntityToModel(createdDonation));
@@ -24,18 +27,14 @@ export class DonationRepository {
 
 	updateOne = async (id: ID, { data }: { data: Partial<Omit<Donation, 'id'>> }) => {
 		const updatedDonation = await this.prisma.donation.update({
-			data,
+			data: {
+				...data,
+				paymentData: data.paymentData ? JSON.stringify(data.paymentData) : undefined,
+			},
 			where: { id }
 		});
 
 		return new Donation(this.fromDbEntityToModel(updatedDonation));
-	}
-
-	private fromModelToDbEntity = (donation: Donation) => {
-		return {
-			...donation,
-			paymentData: JSON.stringify(donation.paymentData),
-		}
 	}
 
 	private fromDbEntityToModel = (entity: DonationDbEntity) => {
