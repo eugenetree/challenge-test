@@ -1,4 +1,4 @@
-import { Module, forwardRef } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { DonationUsecase } from './donation.usecase';
 import { DatabaseModule } from 'src/_common/database/database.module';
 import { DonationRepository } from './donation.repository';
@@ -9,7 +9,7 @@ import { UserModule } from 'src/user/user.module';
 import { DonationNotifierModule } from 'src/donation-notifier/donation-notifier.module';
 
 @Module({
-  imports: [DatabaseModule, AuthModule, SessionModule, UserModule, forwardRef(() => DonationNotifierModule)],
+  imports: [DatabaseModule, AuthModule, SessionModule, UserModule, DonationNotifierModule],
   providers: [DonationUsecase, DonationRepository],
   exports: [DonationUsecase, DonationRepository],
   controllers: [DonationController],

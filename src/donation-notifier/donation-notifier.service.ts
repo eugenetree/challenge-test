@@ -5,23 +5,15 @@ import { ID } from "src/_common/types";
 import { DonationAlertWidget } from "src/donation-alert-widget/donation-alert-widget";
 import { DonationAlertWidgetRepository } from "src/donation-alert-widget/donation-alert-widget.repository";
 import { Donation } from "src/donation/donation";
-import { DonationRepository } from "src/donation/donation.repository";
 
 @Injectable()
 export class DonationNotifierService {
 	constructor(
 		private readonly socketService: SocketService,
-		private readonly donationRepository: DonationRepository,
 		private readonly donationAlertWidgetRepository: DonationAlertWidgetRepository,
 	) { }
 
-	notify = async (donationId) => {
-		const donation = await this.donationRepository.findOne({ where: { id: donationId } });
-
-		if (!donation) {
-			throw new Error(`Donation with id ${donationId} not found`);
-		};
-
+	notify = async (donation: Donation) => {
 		const donationWidgets = await this.donationAlertWidgetRepository.findMany({
 			where: { userId: donation.recipientId },
 		});

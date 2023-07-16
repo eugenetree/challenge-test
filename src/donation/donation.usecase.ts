@@ -52,6 +52,6 @@ export class DonationUsecase {
 			}
 		});
 
-		await this.donationNotifierService.notify(donation.id);
+		await this.donationNotifierService.notify(donation);
 	}
 }
