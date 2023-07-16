@@ -9,6 +9,6 @@ export class AppController {
 
 	@Get()
 	async getHello() {
-		return await this.donationNotifierService.notify('1ba40dff-f10d-4872-9c0d-26922ab28992')
+		// return await this.donationNotifierService.notify('1ba40dff-f10d-4872-9c0d-26922ab28992')
 	}
 }

@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { groupBy, isFinite } from "lodash";
+import { groupBy } from "lodash";
 import { SocketService } from "src/_common/socket/socket.service";
 import { ID } from "src/_common/types";
 import { DonationAlertWidget } from "src/donation-alert-widget/donation-alert-widget";

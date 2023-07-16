@@ -33,9 +33,13 @@ export class DonationUsecase {
 	};
 
 	createTestDonation = async (input: CreateTestDonationDto & { recipientId: ID }): Promise<Donation> => {
-		return this.donationRepository.create({
+		const donation = await this.donationRepository.create({
 			data: new Donation({ ...input, paymentSystem: 'test' }),
 		});
+
+		await this.donationNotifierService.notify(donation);
+
+		return donation;
 	};
 
 	processSuccessfulDonation = async (donationId: ID, paymentData: Record<string, unknown>): Promise<void> => {
