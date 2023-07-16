@@ -12,6 +12,7 @@ import { DonationAlertWidgetModule } from './donation-alert-widget/donation-aler
 import { AlertWidgetsGroupModule } from './alert-widgets-group/alert-widgets-group.module';
 import { AppController } from './app.controller';
 import { DonationNotifierModule } from './donation-notifier/donation-notifier.module';
+import { FileStorageModule } from './_common/file-storage/file-storage.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { DonationNotifierModule } from './donation-notifier/donation-notifier.mo
     AlertWidgetsGroupModule,
     SocketModule,
     DonationNotifierModule,
+    FileStorageModule,
   ],
   controllers: [AppController],
   providers: [
