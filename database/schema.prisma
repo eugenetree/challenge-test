@@ -23,6 +23,7 @@ model User {
   donations             Donation[]
   donationAlertsWidgets DonationAlertWidget[]
   alertWidgetsGroups    AlertWidgetsGroup[]
+  files UserMedia[]
 }
 
 //
@@ -93,6 +94,7 @@ model DonationAlertWidget {
   userId              String
   alertWidgetsGroup   AlertWidgetsGroup @relation(fields: [alertWidgetsGroupId], references: [id])
   alertWidgetsGroupId String
+  files               UserMedia[]
 }
 
 //  
@@ -105,4 +107,20 @@ model AlertWidgetsGroup {
   user                 User                  @relation(fields: [userId], references: [id])
   userId               String
   donationAlertWidgets DonationAlertWidget[]
+}
+
+//
+
+model UserMedia {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name     String
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  donationAlertWidget DonationAlertWidget? @relation(fields: [donationAlertWidgetId], references: [id])
+  donationAlertWidgetId String?
 }

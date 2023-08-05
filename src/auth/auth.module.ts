@@ -4,8 +4,8 @@ import { TwitchAuthModule } from "./strategies/twitch/twitch-auth.module";
 import { AuthSessionGuard } from "./auth-session.guard";
 
 @Module({
-	imports: [SessionModule, TwitchAuthModule, SessionModule],
-	providers: [AuthSessionGuard],
-	exports: [AuthSessionGuard],
+	imports: [SessionModule, TwitchAuthModule],
+	providers: [],
+	exports: [],
 })
 export class AuthModule { }
