@@ -37,4 +37,4 @@ import { SessionModule } from './auth/session/session.module';
     },
   ],
 })
-export class AppModule {}
+export class AppModule { }
