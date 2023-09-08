@@ -19,10 +19,6 @@ export class UserService {
 		private readonly donationAlertWidgetRepository: DonationAlertWidgetRepository,
 	) { }
 
-	test = () => {
-		console.log('123');
-	}
-
 	createViaOauth = async ({
 		accessToken,
 		refreshToken,

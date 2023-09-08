@@ -27,7 +27,6 @@ export class DonationNotifierService {
 				donation,
 			})
 		}
-
 	}
 
 	private notifyAlertWidgetsGroup = async ({
@@ -48,8 +47,8 @@ export class DonationNotifierService {
 		for (const widget of widgetsWithSpecificAmount) {
 			if (donation.amount === widget.specificAmount) {
 				this.socketService.emitToRoom({
-					roomId: alertWidgetsGroupId,
-					eventName: 'DONATION_TO_PLAY',
+					roomId: widget.id,
+					eventName: 'DONATION_TO_PLAY_REGULAR',
 					eventData: donation,
 				})
 
@@ -60,8 +59,8 @@ export class DonationNotifierService {
 		for (const widget of widgetsWithRangeAmount) {
 			if (donation.amount >= widget.minAmount! && donation.amount <= widget.maxAmount!) {
 				this.socketService.emitToRoom({
-					roomId: alertWidgetsGroupId,
-					eventName: 'DONATION_TO_PLAY',
+					roomId: widget.id,
+					eventName: 'DONATION_TO_PLAY_REGULAR',
 					eventData: donation,
 				})
 
@@ -72,8 +71,8 @@ export class DonationNotifierService {
 		for (const widget of widgetsWithMinAmount) {
 			if (donation.amount > widget.minAmount!) {
 				this.socketService.emitToRoom({
-					roomId: alertWidgetsGroupId,
-					eventName: 'DONATION_TO_PLAY',
+					roomId: widget.id,
+					eventName: 'DONATION_TO_PLAY_REGULAR',
 					eventData: donation,
 				})
 
