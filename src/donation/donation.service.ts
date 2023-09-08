@@ -5,9 +5,10 @@ import { CreateRealDonationDto, CreateTestDonationDto } from './donation.dto';
 import { ID } from 'src/_common/types';
 import { UserRepository } from 'src/user/user.repository';
 import { DonationNotifierService } from 'src/donation-notifier/donation-notifier.service';
+import { EntityNotFoundError } from 'src/_common/database/database.errors';
 
 @Injectable()
-export class DonationUsecase {
+export class DonationService {
 	constructor(
 		private readonly donationRepository: DonationRepository,
 		private readonly userRepository: UserRepository,
@@ -22,7 +23,7 @@ export class DonationUsecase {
 		const recipient = await this.userRepository.findOne({ where: { id: input.recipientId } });
 
 		if (!recipient) {
-			throw new Error(`Recipient with id ${input.recipientId} was not found`)
+			throw new EntityNotFoundError({ entityName: 'user', id: input.recipientId })
 		}
 
 		return await this.donationRepository.create({
@@ -46,7 +47,7 @@ export class DonationUsecase {
 		const donation = await this.donationRepository.findOne({ where: { id: donationId } });
 
 		if (!donation) {
-			throw new Error(`Donation with id ${donationId} not found`);
+			throw new EntityNotFoundError({ entityName: 'donation', id: donationId });
 		};
 
 		await this.donationRepository.updateOne(donation.id, {

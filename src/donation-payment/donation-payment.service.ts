@@ -7,7 +7,7 @@ import { ID } from "src/_common/types";
 import { DonationRepository } from "src/donation/donation.repository";
 
 @Injectable()
-export class DonationPaymentUsecase {
+export class DonationPaymentService {
 	constructor(
 		private readonly loggerService: LoggerService,
 		private readonly donationRepository: DonationRepository,
@@ -34,7 +34,7 @@ export class DonationPaymentUsecase {
 		}
 
 		this.loggerService.info(
-			DonationPaymentUsecase.name,
+			DonationPaymentService.name,
 			`Generating redirect url for payment page for created donation.`
 		)
 

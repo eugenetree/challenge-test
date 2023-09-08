@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { DonationUsecase } from './donation.usecase';
+import { DonationService } from './donation.service';
 import { DatabaseModule } from 'src/_common/database/database.module';
 import { DonationRepository } from './donation.repository';
 import { DonationController } from './donation.controller';
@@ -10,8 +10,8 @@ import { DonationNotifierModule } from 'src/donation-notifier/donation-notifier.
 
 @Module({
   imports: [DatabaseModule, AuthModule, SessionModule, UserModule, DonationNotifierModule],
-  providers: [DonationUsecase, DonationRepository],
-  exports: [DonationUsecase, DonationRepository],
+  providers: [DonationService, DonationRepository],
+  exports: [DonationService, DonationRepository],
   controllers: [DonationController],
 })
 export class DonationModule { }

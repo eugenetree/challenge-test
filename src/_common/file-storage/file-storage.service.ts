@@ -12,7 +12,7 @@ export class FileStorageService {
 	) { }
 
 	saveFile = async ({ binaryData, filename, folder }: { binaryData: Buffer, filename: string, folder?: string }) => {
-		const filePath = path.join(appRootPath, 'storage', `${crypto.randomUUID()}-${filename}`);
+		const filePath = path.join('storage', `${crypto.randomUUID()}-${filename}`);
 		await writeFile(filePath, binaryData);
 		
 		return path.join(this.settingsService.BACK_APP_URL, filePath);

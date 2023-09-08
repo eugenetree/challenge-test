@@ -5,6 +5,7 @@ import { resolve } from 'path';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  app.enableCors();
   app.useStaticAssets(resolve(__dirname, '../storage'), { prefix: '/storage' });
   await app.listen(3000);
 }

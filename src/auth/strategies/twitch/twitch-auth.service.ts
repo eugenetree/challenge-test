@@ -10,7 +10,7 @@ import { OauthProvider } from "src/oauth-provider/oauth-provider";
 import { OauthProviderRepository } from "src/oauth-provider/oauth-provider.repository";
 
 @Injectable()
-export class TwitchAuthUsecase {
+export class TwitchAuthService {
 	constructor(
 		private readonly settingsService: SettingsService,
 		private readonly loggerService: LoggerService,
@@ -50,14 +50,14 @@ export class TwitchAuthUsecase {
 	}
 
 	authenticate = async (code: string): Promise<User> => {
-		this.loggerService.info(TwitchAuthUsecase.name, `Requesting user tokens and data by code: ${code}`)
+		this.loggerService.info(TwitchAuthService.name, `Requesting user tokens and data by code: ${code}`)
 
 		const { accessToken, refreshToken, profile } = await this.twitchAuthApiService.getDataByOauthCode(code);
 
 		const user = await this.userRepository.findOneByOauthProvider({ where: { profileId: profile.id } });
 
 		this.loggerService.info(
-			TwitchAuthUsecase.name,
+			TwitchAuthService.name,
 			`User was found by profileId ${profile.id}: ${JSON.stringify(user)}`
 		);
 
@@ -71,7 +71,7 @@ export class TwitchAuthUsecase {
 		})
 
 		this.loggerService.info(
-			TwitchAuthUsecase.name,
+			TwitchAuthService.name,
 			`New user was created: ${JSON.stringify(createdUser)}`
 		);
 
