@@ -8,7 +8,7 @@ import { DonationAlertWidget } from "src/donation-alert-widget/donation-alert-wi
 import { OauthProviderRepository } from "src/oauth-provider/oauth-provider.repository";
 import { AlertWidgetsGroupRepository } from "src/alert-widgets-group/alert-widgets-group.repository";
 import { DonationAlertWidgetRepository } from "src/donation-alert-widget/donation-alert-widget.repository";
-import { UserMediaService } from "src/user-media/user-media.service";
+import { MediaService } from "src/media/media.service";
 
 @Injectable()
 export class UserService {

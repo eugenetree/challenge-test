@@ -4,19 +4,19 @@ import { z } from "zod";
 const paramsSchema = z.object({
 	id: z.string().optional(),
 	name: z.string(),
-	userId: z.string(),
+	userId: z.string().nullable().optional().default(null),
   donationAlertWidgetId: z.string().nullable().optional().default(null),
 });
 
-export type UserMediaInputParams = z.input<typeof paramsSchema>;
+export type ImageInputParams = z.input<typeof paramsSchema>;
 
-export class UserMedia {
+export class Image {
 	id: ID;
 	name: string;
-	userId: ID;
+	userId: ID | null;
   donationAlertWidgetId: ID | null;
 
-	constructor(params: UserMediaInputParams) {
+	constructor(params: ImageInputParams) {
 		paramsSchema.parse(params);
 		Object.assign(this, params);
 	}

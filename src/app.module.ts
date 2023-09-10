@@ -12,7 +12,7 @@ import { DonationAlertWidgetModule } from './donation-alert-widget/donation-aler
 import { AlertWidgetsGroupModule } from './alert-widgets-group/alert-widgets-group.module';
 import { AppController } from './app.controller';
 import { DonationNotifierModule } from './donation-notifier/donation-notifier.module';
-import { UserMediaModule } from './user-media/user-media.module';
+import { UserMediaModule } from './media/media.module';
 import { SessionModule } from './auth/session/session.module';
 
 @Module({
@@ -28,6 +28,7 @@ import { SessionModule } from './auth/session/session.module';
     AlertWidgetsGroupModule,
     SocketModule,
     DonationNotifierModule,
+    SessionModule,
   ],
   controllers: [AppController],
   providers: [

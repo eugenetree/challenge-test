@@ -1,12 +1,11 @@
-import { Controller, Get } from "@nestjs/common";
-import { UserMediaService } from "./user-media/user-media.service";
+import { Controller, Get, Req } from "@nestjs/common";
 
 @Controller()
 export class AppController {
 	constructor() { }
 
 	@Get('ping')
-	async ping() {
+	async pingGet() {
 		return 'pong';
 	}
 }
