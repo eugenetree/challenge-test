@@ -2,6 +2,7 @@ import * as session from 'express-session';
 import { Module, NestModule } from '@nestjs/common';
 
 import { SessionService } from './session.service';
+import { SessionMiddleware } from './session.middleware';
 
 @Module({
   exports: [SessionService],
@@ -10,11 +11,7 @@ import { SessionService } from './session.service';
 export class SessionModule implements NestModule {
   configure: NestModule['configure'] = (consumer) => {
     consumer
-      .apply(session({
-        secret: 'a santa at nasa',
-        resave: false,
-        cookie: { maxAge: 7 * 24 * 60 * 60 * 1000 },
-      }))
+      .apply(SessionMiddleware)
       .forRoutes('*')
   }
 }

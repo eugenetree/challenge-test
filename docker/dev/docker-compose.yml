@@ -33,5 +33,14 @@ services:
       - DOMAIN=nest
       - PORT=3000
       - AUTH_TOKEN=1jBv7lLFgqAS6Sl6ZSCzrKgjvjZ_7tgy9Wiu7biSDbVz9fAdn
+  redis:
+    image: redis:6.2-alpine
+    restart: always
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel warning
+    volumes: 
+      - redis:/data
 volumes:
   db:
+  redis:
