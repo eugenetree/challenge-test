@@ -1,7 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/_common/database/prisma.service";
 import { DonationAlertWidget } from "./donation-alert-widget";
-import { ID } from "src/_common/types";
+import { Optional } from "src/_common/types";
+
+type DonationAlertWidgetInput = Optional<DonationAlertWidget, 'id' | 'maxAmount' | 'minAmount' | 'specificAmount'>;
 
 @Injectable()
 export class DonationAlertWidgetRepository {
@@ -9,19 +11,11 @@ export class DonationAlertWidgetRepository {
 		private readonly prisma: PrismaService,
 	) { }
 
-	create = async ({ data }: { data: DonationAlertWidget }): Promise<DonationAlertWidget> => {
-		return new DonationAlertWidget(
-			await this.prisma.donationAlertWidget.create({ data }));
+	create = async ({ data }: { data: DonationAlertWidgetInput }): Promise<DonationAlertWidget> => {
+		return this.prisma.donationAlertWidget.create({ data });
 	}
 
 	findMany = async ({ where }: { where: Partial<DonationAlertWidget> }): Promise<DonationAlertWidget[]> => {
-		const foundWidgets = await this.prisma.donationAlertWidget.findMany({ where });
-		return foundWidgets.map(data => new DonationAlertWidget(data));
+		return this.prisma.donationAlertWidget.findMany({ where });
 	}
-
-	// findManyByAlertWidgetsGroupIds = async (ids: ID[]): Promise<DonationAlertWidget[]> => {
-	// 	return (await this.prisma.donationAlertWidget.findMany({
-	// 		where: { alertWidgetsGroupId: { in: ids } }, 
-	// 	})).map(data => new DonationAlertWidget(data));
-	// }
 }

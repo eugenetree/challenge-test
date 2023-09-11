@@ -2,13 +2,13 @@ import { Injectable } from "@nestjs/common";
 import { Donation as DonationDbEntity, Prisma } from "@prisma/client";
 import { PrismaService } from "src/_common/database/prisma.service";
 import { Donation } from "./donation";
-import { ID } from "src/_common/types";
+import { ID, Optional } from "src/_common/types";
 
 @Injectable()
 export class DonationRepository {
 	constructor(private readonly prisma: PrismaService) { }
 
-	create = async ({ data }: { data: Donation }): Promise<Donation> => {
+	create = async ({ data }: { data: Optional<Donation, 'id' | 'paymentData'> }): Promise<Donation> => {
 		const createdDonation = await this.prisma.donation.create({
 			data: {
 				...data,
@@ -16,13 +16,13 @@ export class DonationRepository {
 			},
 		});
 
-		return new Donation(this.fromDbEntityToModel(createdDonation));
+		return this.fromDbEntityToModel(createdDonation);
 	}
 
 	findOne = async ({ where }: { where: Partial<Donation> }): Promise<Donation | null> => {
 		const foundDonation = await this.prisma.donation.findFirst({ where });
 		return foundDonation ?
-			new Donation(this.fromDbEntityToModel(foundDonation)) : null;
+			(this.fromDbEntityToModel(foundDonation)) : null;
 	}
 
 	updateOne = async (id: ID, { data }: { data: Partial<Omit<Donation, 'id'>> }) => {
@@ -34,7 +34,7 @@ export class DonationRepository {
 			where: { id }
 		});
 
-		return new Donation(this.fromDbEntityToModel(updatedDonation));
+		return this.fromDbEntityToModel(updatedDonation);
 	}
 
 	private fromDbEntityToModel = (entity: DonationDbEntity) => {

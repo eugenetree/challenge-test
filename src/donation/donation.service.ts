@@ -27,15 +27,22 @@ export class DonationService {
 		}
 
 		return await this.donationRepository.create({
-			data: new Donation({
+			data: {
 				...input,
-			}),
+				paymentStatus: 'notPaid',
+				notificationWasPlayed: false,
+			},
 		})
 	};
 
 	createTestDonation = async (input: CreateTestDonationDto & { recipientId: ID }): Promise<Donation> => {
 		const donation = await this.donationRepository.create({
-			data: new Donation({ ...input, paymentSystem: 'test' }),
+			data: {
+				...input,
+				paymentSystem: 'test',
+				paymentStatus: 'notPaid',
+				notificationWasPlayed: false,
+			},
 		});
 
 		await this.donationNotifierService.notify(donation);

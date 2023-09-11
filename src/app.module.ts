@@ -14,6 +14,7 @@ import { AppController } from './app.controller';
 import { DonationNotifierModule } from './donation-notifier/donation-notifier.module';
 import { UserMediaModule } from './media/media.module';
 import { SessionModule } from './auth/session/session.module';
+import { PanelModule } from './panel/panel.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { SessionModule } from './auth/session/session.module';
     SocketModule,
     DonationNotifierModule,
     SessionModule,
+    PanelModule,
   ],
   controllers: [AppController],
   providers: [

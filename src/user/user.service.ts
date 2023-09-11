@@ -26,29 +26,29 @@ export class UserService {
 		type
 	}) => {
 		const createdUser = await this.userRepository.create({
-			data: new User({ token: this.generateUniqueToken() })
+			data: { token: this.generateUniqueToken() }
 		})
 
 		await this.oauthProviderRepository.create({
-			data: new OauthProvider({
+			data: {
 				accessToken,
 				refreshToken,
 				profileId: oauthProviderProfileId,
 				type,
 				userId: createdUser.id
-			})
+			}
 		})
 
 		const createdAlertWidgetsGroup = await this.alertWidgetsGroupRepository.create({
-			data: new AlertWidgetsGroup({ userId: createdUser.id })
+			data: { userId: createdUser.id }
 		})
 
 		await this.donationAlertWidgetRepository.create({
-			data: new DonationAlertWidget({
+			data: {
 				text: 'Default donation text',
 				userId: createdUser.id,
 				alertWidgetsGroupId: createdAlertWidgetsGroup.id,
-			})
+			}
 		})
 
 		return createdUser;

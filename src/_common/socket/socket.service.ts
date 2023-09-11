@@ -8,12 +8,17 @@ import { UserRepository } from "src/user/user.repository";
 // DONATION_TO_PLAY_FORCE = event when donation was inited to play out of turn (by streamer)
 // DONATION_TO_STOP = event when donation was inited to stop by streamer
 
-type EventName = 'DONATION_TO_PLAY_REGULAR' | 'DONATION_TO_PLAY_TEST' | 'DONATION_TO_PLAY_FORCE' | 'DONATION_TO_STOP';
+type EventName =
+	| 'DONATION_TO_PLAY_REGULAR'
+	| 'DONATION_TO_PLAY_TEST'
+	| 'DONATION_TO_PLAY_FORCE'
+	| 'DONATION_TO_STOP'
+	| 'CONNECTION_ERROR';
 
 @Injectable()
 export class SocketService {
 	private server: Server;
-	
+
 	constructor(
 		private readonly userRepository: UserRepository,
 	) { }
@@ -37,15 +42,19 @@ export class SocketService {
 		}
 	}
 
-	emitToRoom = async ({
-		roomId,
+	emitEvent({
 		eventName,
-		eventData
+		eventData,
+		roomId,
 	}: {
-		roomId: string,
 		eventName: EventName;
-		eventData?: unknown
-	}) => {
-		this.server.to(roomId).emit(eventName, eventData);
+		eventData?: unknown;
+		roomId?: string;
+	}) {
+		if (roomId) {
+			this.server.to(roomId).emit(eventName, eventData);
+		} else {
+			this.server.emit(eventName, eventData);
+		}
 	}
 }

@@ -19,69 +19,88 @@ export class MediaService {
 		audio: ['mp3', 'wav', 'ogg'],
 	}
 
+	async getImages({ userId }: { userId: ID }) {
+		const images = await this.imageRepository.findMany({ where: { userId } });
+		return images.map((image) => ({
+			id: image.id,
+			name: image.originalFilename,
+			url: path.join(
+				this.fileStorageService.getRootStoragePath(),
+				this.getFolderName({ fileType: 'privateImage', userId }),
+				image.generatedFilename,
+			),
+		}))
+	}
+
 	async uploadImagePublic({
 		binaryData,
-		filename,
+		filename: originalFilename,
 	}: {
 		binaryData: Buffer;
 		filename: string;
 	}) {
-		this.validateImage({ filename });
+		this.validateImage({ filename: originalFilename });
 
 		const folder = this.getFolderName({ fileType: 'publicImage' });
 
-		const createdImageFile = await this.fileStorageService.saveFile({
+		const { filename: generatedFilename } = await this.fileStorageService.saveFile({
 			binaryData,
-			filename,
+			filename: originalFilename,
 			folder,
 		});
 
 		const createdImageRecord = await this.imageRepository.create({
-			data: new Image({ name: filename }),
+			data: {
+				originalFilename,
+				generatedFilename
+			},
 		});
 
 		return {
 			id: createdImageRecord.id,
+			name: originalFilename,
 			url: path.join(
 				this.fileStorageService.getRootStoragePath(),
 				folder,
-				createdImageFile.filename,	
+				generatedFilename,
 			),
 		}
 	}
 
 	async uploadImagePrivate({
 		binaryData,
-		filename,
+		filename: originalFilename,
 		userId,
 	}: {
 		binaryData: Buffer;
 		filename: string;
 		userId: ID;
 	}) {
-		this.validateImage({ filename });
+		this.validateImage({ filename: originalFilename });
 
 		const folder = this.getFolderName({ fileType: 'privateImage', userId });
 
-		await this.fileStorageService.saveFile({
+		const { filename: generatedFilename } = await this.fileStorageService.saveFile({
 			binaryData,
-			filename,
+			filename: originalFilename,
 			folder,
 		});
 
-		const createdImage = await this.imageRepository.create({
-			data: new Image({
-				name: filename,
+		const createdImageRecord = await this.imageRepository.create({
+			data: {
+				originalFilename,
+				generatedFilename,
 				userId,
-			}),
+			},
 		});
 
 		return {
-			id: createdImage.id,
+			id: createdImageRecord.id,
+			name: originalFilename,
 			url: path.join(
 				this.fileStorageService.getRootStoragePath(),
 				folder,
-				createdImage.name,
+				generatedFilename,
 			),
 		}
 	}

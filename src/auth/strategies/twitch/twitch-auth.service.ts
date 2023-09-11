@@ -83,13 +83,13 @@ export class TwitchAuthService {
 		const { accessToken, refreshToken, profile } = await this.twitchAuthApiService.getDataByOauthCode(code);
 
 		return this.oauthProviderRepository.create({
-			data: new OauthProvider({
+			data: {
 				accessToken,
 				refreshToken,
 				profileId: profile.id,
 				type: 'twitch',
 				userId,
-			})
+			}
 		})
 	};
 

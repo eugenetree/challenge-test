@@ -16,22 +16,30 @@ export class MediaController {
 	uploadImagePublic(
 		@UploadedFile() image: Express.Multer.File,
 	) {
-		console.log(image);
-
 		return this.mediaService.uploadImagePublic({
 			binaryData: image.buffer,
 			filename: image.originalname,
 		});
 	}
 
+	@UseGuards(AuthSessionGuard)
+	@Get('user/images')
+	getImages(
+		@UserId() userId: ID,
+	) {
+		return this.mediaService.getImages({ userId });
+	}
+
+	@UseGuards(AuthSessionGuard)
 	@Post('user/images')
+	@UseInterceptors(FileInterceptor('image'))
 	uploadImagePrivate(
-		@UploadedFile('image') file: Express.Multer.File,
+		@UploadedFile() image: Express.Multer.File,
 		@UserId() userId: ID,
 	) {
 		return this.mediaService.uploadImagePrivate({
-			binaryData: file.buffer,
-			filename: file.originalname,
+			binaryData: image.buffer,
+			filename: image.originalname,
 			userId,
 		});
 	}
