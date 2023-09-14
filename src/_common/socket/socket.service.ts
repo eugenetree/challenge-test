@@ -13,7 +13,11 @@ type EventName =
 	| 'DONATION_TO_PLAY_TEST'
 	| 'DONATION_TO_PLAY_FORCE'
 	| 'DONATION_TO_STOP'
-	| 'CONNECTION_ERROR';
+	| 'JOIN_TO_ROOM_SUCCESS'
+	| 'JOIN_TO_ROOM_ERROR'
+
+type RoomType =
+	| 'ALERT_WIDGETS_GROUP'
 
 @Injectable()
 export class SocketService {
@@ -29,16 +33,20 @@ export class SocketService {
 
 	joinToRoom = async ({
 		token,
-		alertWidgetsGroupId,
+		roomType,
+		roomId,
 		client
 	}: {
 		token: string;
-		alertWidgetsGroupId: ID;
+		roomType: RoomType;
+		roomId: string;
 		client: Socket
 	}) => {
+		// TODO: move logic of verifying user into guard
 		const user = await this.userRepository.findOne({ where: { token } });
+		const roomUrl = this.getRoomUrl({ roomType, roomId });
 		if (user) {
-			client.join(alertWidgetsGroupId);
+			client.join(roomUrl);
 		}
 	}
 
@@ -56,5 +64,9 @@ export class SocketService {
 		} else {
 			this.server.emit(eventName, eventData);
 		}
+	}
+
+	private getRoomUrl = ({ roomType, roomId }: { roomType: RoomType, roomId: ID }) => { 
+		return `${roomType}/${roomId}`
 	}
 }
