@@ -11,4 +11,5 @@ export class Donation {
 	paymentData: Record<string, unknown> | null;
 	notificationWasPlayed: boolean;
 	recipientId: ID;
+	donationGoalWidgetId: ID | null;
 };

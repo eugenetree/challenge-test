@@ -1,5 +1,4 @@
 import { ID } from "src/_common/types";
-import { z } from "zod";
 
 export class DonationAlertWidget {
 	id: ID;

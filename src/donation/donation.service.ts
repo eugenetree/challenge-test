@@ -19,26 +19,26 @@ export class DonationService {
 		return await this.donationRepository.findOne({ where });
 	}
 
-	createRealDonation = async (input: CreateRealDonationDto): Promise<Donation> => {
-		const recipient = await this.userRepository.findOne({ where: { id: input.recipientId } });
+	createRealDonation = async (data: CreateRealDonationDto): Promise<Donation> => {
+		const recipient = await this.userRepository.findOne({ where: { id: data.recipientId } });
 
 		if (!recipient) {
-			throw new EntityNotFoundError({ entityName: 'user', id: input.recipientId })
+			throw new EntityNotFoundError({ entityName: 'user', id: data.recipientId })
 		}
 
 		return await this.donationRepository.create({
 			data: {
-				...input,
+				...data,
 				paymentStatus: 'notPaid',
 				notificationWasPlayed: false,
 			},
 		})
 	};
 
-	createTestDonation = async (input: CreateTestDonationDto & { recipientId: ID }): Promise<Donation> => {
+	createTestDonation = async (data: CreateTestDonationDto & { recipientId: ID }): Promise<Donation> => {
 		const donation = await this.donationRepository.create({
 			data: {
-				...input,
+				...data,
 				paymentSystem: 'test',
 				paymentStatus: 'notPaid',
 				notificationWasPlayed: false,

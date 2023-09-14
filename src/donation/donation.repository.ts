@@ -8,7 +8,8 @@ import { ID, Optional } from "src/_common/types";
 export class DonationRepository {
 	constructor(private readonly prisma: PrismaService) { }
 
-	create = async ({ data }: { data: Optional<Donation, 'id' | 'paymentData'> }): Promise<Donation> => {
+	create = async ({ data }:
+		{ data: Optional<Donation, 'id' | 'donationGoalWidgetId' | 'paymentData'> }): Promise<Donation> => {
 		const createdDonation = await this.prisma.donation.create({
 			data: {
 				...data,

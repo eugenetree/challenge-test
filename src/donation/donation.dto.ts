@@ -7,8 +7,9 @@ export class CreateRealDonationDto extends createZodDto(
 		amount: z.number(),
 		senderName: z.string(),
 		message: z.string(),
-		recipientId: z.string(),
 		paymentSystem: z.enum(['fondy']),
+		recipientId: z.string(),
+		donationGoalWidgetId: z.string().optional(),
 	})
 ) { }
 

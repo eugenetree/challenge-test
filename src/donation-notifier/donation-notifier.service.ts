@@ -13,7 +13,12 @@ export class DonationNotifierService {
 		private readonly donationAlertWidgetRepository: DonationAlertWidgetRepository,
 	) { }
 
-	notify = async (donation: Donation) => {
+	async notify(donation: Donation) {
+		this.notifyDonationAlertWidgets(donation);
+		this.notifyDonationGoalWidget(donation);
+	}
+
+	private async notifyDonationAlertWidgets(donation: Donation) {
 		const donationWidgets = await this.donationAlertWidgetRepository.findMany({
 			where: { userId: donation.recipientId },
 		});
@@ -29,7 +34,8 @@ export class DonationNotifierService {
 		}
 	}
 
-	private notifyAlertWidgetsGroup = async ({
+	// TODO: give better naming
+	private async notifyAlertWidgetsGroup({
 		alertWidgetsGroupId,
 		donationWidgets,
 		donation,
@@ -37,7 +43,7 @@ export class DonationNotifierService {
 		alertWidgetsGroupId: ID;
 		donationWidgets: DonationAlertWidget[];
 		donation: Donation;
-	}) => {
+	}) {
 		const {
 			widgetsWithSpecificAmount,
 			widgetsWithRangeAmount,
@@ -57,7 +63,7 @@ export class DonationNotifierService {
 		}
 
 		for (const widget of widgetsWithRangeAmount) {
-				if (donation.amount >= widget.minAmount! && donation.amount <= widget.maxAmount!) {
+			if (donation.amount >= widget.minAmount! && donation.amount <= widget.maxAmount!) {
 				this.socketService.emitEvent({
 					roomId: widget.id,
 					eventName: 'DONATION_TO_PLAY_REGULAR',
@@ -81,11 +87,11 @@ export class DonationNotifierService {
 		}
 	}
 
-	private getSortedDonationWidgetsByAmount = ({
+	private getSortedDonationWidgetsByAmount({
 		donationWidgets,
 	}: {
 		donationWidgets: DonationAlertWidget[],
-	}) => {
+	}) {
 		const widgetsWithSpecificAmount: DonationAlertWidget[] = [];
 		const widgetsWithRangeAmount: DonationAlertWidget[] = [];
 		const widgetsWithMinAmount: DonationAlertWidget[] = [];
@@ -109,5 +115,15 @@ export class DonationNotifierService {
 			widgetsWithRangeAmount,
 			widgetsWithMinAmount: widgetsWithMinAmount.sort((a, b) => b.minAmount! - a.minAmount!),
 		}
+	}
+
+	private notifyDonationGoalWidget(donation: Donation) {
+		if (donation.donationGoalWidgetId === null) {
+			return;
+		}
+
+		this.socketService.emitEvent({
+			
+		})
 	}
 }

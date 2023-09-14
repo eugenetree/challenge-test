@@ -8,16 +8,24 @@ import { UserRepository } from "src/user/user.repository";
 // DONATION_TO_PLAY_FORCE = event when donation was inited to play out of turn (by streamer)
 // DONATION_TO_STOP = event when donation was inited to stop by streamer
 
-type EventName =
+type AlertWidgetsGroupEventName =
 	| 'DONATION_TO_PLAY_REGULAR'
 	| 'DONATION_TO_PLAY_TEST'
 	| 'DONATION_TO_PLAY_FORCE'
 	| 'DONATION_TO_STOP'
-	| 'JOIN_TO_ROOM_SUCCESS'
-	| 'JOIN_TO_ROOM_ERROR'
+
+type DonationGoalWidgetEventName =
+	| 'DONATION_GOAL_WIDGET_SUM_UPDATED'
 
 type RoomType =
 	| 'ALERT_WIDGETS_GROUP'
+	| 'DONATION_GOAL_WIDGET'
+
+type EmitAlertWidgetsGroupEventParams =
+	| { eventName: 'DONATION_TO_PLAY_REGULAR', data: { donationAlertWidgetId: ID; } } // TODO: add here some info
+
+type EmitDonationGoalWidgetEventParams = 
+	| { eventName: 'DONATION_GOAL_WIDGET_SUM_UPDATED', data: { sum: number } }
 
 @Injectable()
 export class SocketService {
@@ -48,6 +56,14 @@ export class SocketService {
 		if (user) {
 			client.join(roomUrl);
 		}
+	}
+
+	async emitDonationGoalWidgetEvent({
+		widgetId,
+	}: {
+		widgetId: ID,
+	}) {
+		
 	}
 
 	emitEvent({

@@ -24,6 +24,7 @@ model User {
   donationAlertsWidgets DonationAlertWidget[]
   alertWidgetsGroups    AlertWidgetsGroup[]
   images                Image[]
+  DonationGoalWidget    DonationGoalWidget[]
 }
 
 //
@@ -74,8 +75,10 @@ model Donation {
   paymentData           String?       @db.Text
   notificationWasPlayed Boolean       @default(false)
 
-  recipient   User   @relation(fields: [recipientId], references: [id])
-  recipientId String
+  recipient            User                @relation(fields: [recipientId], references: [id])
+  recipientId          String
+  donationGoalWidget   DonationGoalWidget? @relation(fields: [donationGoalWidgetId], references: [id])
+  donationGoalWidgetId String?
 }
 
 //
@@ -94,9 +97,26 @@ model DonationAlertWidget {
   userId              String
   alertWidgetsGroup   AlertWidgetsGroup @relation(fields: [alertWidgetsGroupId], references: [id])
   alertWidgetsGroupId String
+  image               Image?            @relation(fields: [imageId], references: [id])
+  imageId             String?
+}
 
-  image   Image?  @relation(fields: [imageId], references: [id])
-  imageId String?
+//
+
+model DonationGoalWidget {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  textWhenRaisingIsInProgress String
+  textWhenRaisingIsFinished  String
+  endDate                    DateTime
+  isWidgetEnabled Boolean
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  donations Donation[]
 }
 
 //  
@@ -121,7 +141,7 @@ model Image {
   originalFilename  String
   generatedFilename String
 
-  user   User?  @relation(fields: [userId], references: [id])
+  user   User?   @relation(fields: [userId], references: [id])
   userId String?
 
   donationAlertWidgets DonationAlertWidget[]
