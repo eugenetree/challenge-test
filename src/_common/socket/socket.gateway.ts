@@ -6,6 +6,7 @@ import { UseFilters, UsePipes } from '@nestjs/common';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { SocketCallbakFilter } from './socket.filter';
 import { SocketCallbackData } from './socket.type';
+import { RoomType } from './socket.events';
 
 // TODO: implement solution with passing auth token via socket-io headers instead of request params
 // @UseGuards(SocketTokenGuard)  
@@ -33,12 +34,24 @@ export class SocketGateway implements OnGatewayInit {
 		@ConnectedSocket() client: Socket
 	): Promise<SocketCallbackData> {
 		try {
-			await this.socketService.joinToRoom({
-				client,
-				token,
-				roomType,
-				roomId,
-			})
+			if (roomType === 'ALERT_WIDGETS_GROUP') {
+				await this.socketService.joinToRoom({
+					client,
+					token,
+					roomType: RoomType.ALERT_WIDGETS_GROUP,
+					roomId,
+				})
+			}
+
+			if (roomType === 'DONATION_GOAL_WIDGET') {
+				await this.socketService.joinToRoom({
+					client,
+					token,
+					roomType: RoomType.DONATION_GOAL_WIDGET,
+					roomId,
+				})
+			}
+			
 			return {
 				status: 'success',
 				data: 'connected',

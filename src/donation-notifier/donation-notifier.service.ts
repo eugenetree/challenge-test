@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { groupBy } from "lodash";
+import { AlertWidgetsGroupEventName, DonationGoalWidgetEventName } from "src/_common/socket/socket.events";
 import { SocketService } from "src/_common/socket/socket.service";
 import { ID } from "src/_common/types";
 import { DonationAlertWidget } from "src/donation-alert-widget/donation-alert-widget";
@@ -52,10 +53,10 @@ export class DonationNotifierService {
 
 		for (const widget of widgetsWithSpecificAmount) {
 			if (donation.amount === widget.specificAmount) {
-				this.socketService.emitEvent({
-					roomId: widget.id,
-					eventName: 'DONATION_TO_PLAY_REGULAR',
-					eventData: donation,
+				this.socketService.emitAlertWidgetsGroupEvent({
+					eventName: AlertWidgetsGroupEventName.DONATION_TO_PLAY_REGULAR,
+					alertWidgetsGroupId,
+					data: { donationAlertWidgetId: widget.id, donation },
 				})
 
 				return;
@@ -64,10 +65,10 @@ export class DonationNotifierService {
 
 		for (const widget of widgetsWithRangeAmount) {
 			if (donation.amount >= widget.minAmount! && donation.amount <= widget.maxAmount!) {
-				this.socketService.emitEvent({
-					roomId: widget.id,
-					eventName: 'DONATION_TO_PLAY_REGULAR',
-					eventData: donation,
+				this.socketService.emitAlertWidgetsGroupEvent({
+					eventName: AlertWidgetsGroupEventName.DONATION_TO_PLAY_REGULAR,
+					alertWidgetsGroupId,
+					data: { donationAlertWidgetId: widget.id, donation },
 				})
 
 				return;
@@ -76,10 +77,10 @@ export class DonationNotifierService {
 
 		for (const widget of widgetsWithMinAmount) {
 			if (donation.amount >= widget.minAmount!) {
-				this.socketService.emitEvent({
-					roomId: widget.id,
-					eventName: 'DONATION_TO_PLAY_REGULAR',
-					eventData: donation,
+				this.socketService.emitAlertWidgetsGroupEvent({
+					eventName: AlertWidgetsGroupEventName.DONATION_TO_PLAY_REGULAR,
+					alertWidgetsGroupId,
+					data: { donationAlertWidgetId: widget.id, donation },
 				})
 
 				return;
@@ -118,12 +119,16 @@ export class DonationNotifierService {
 	}
 
 	private notifyDonationGoalWidget(donation: Donation) {
+		console.log(`processing goal widget alert for ${JSON.stringify(donation)}`)
+
 		if (donation.donationGoalWidgetId === null) {
 			return;
 		}
 
-		this.socketService.emitEvent({
-			
+		this.socketService.emitDonationGoalWidgetEvent({
+			eventName: DonationGoalWidgetEventName.DONATION_GOAL_WIDGET_SUM_UPDATED,
+			donationGoalWidgetId: donation.donationGoalWidgetId,
+			data: { sum: donation.amount },
 		})
 	}
 }

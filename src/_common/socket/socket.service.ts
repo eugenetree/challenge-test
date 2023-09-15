@@ -2,30 +2,30 @@ import { Injectable } from "@nestjs/common";
 import { ID } from "../types";
 import { Server, Socket } from "socket.io";
 import { UserRepository } from "src/user/user.repository";
-
-// DONATION_TO_PLAY_REGULAR = event when donation was paid and after payment sent to the streamer
-// DONATION_TO_PLAY_TEST = event when donation was sent as test (payment phase was skipped)
-// DONATION_TO_PLAY_FORCE = event when donation was inited to play out of turn (by streamer)
-// DONATION_TO_STOP = event when donation was inited to stop by streamer
-
-type AlertWidgetsGroupEventName =
-	| 'DONATION_TO_PLAY_REGULAR'
-	| 'DONATION_TO_PLAY_TEST'
-	| 'DONATION_TO_PLAY_FORCE'
-	| 'DONATION_TO_STOP'
-
-type DonationGoalWidgetEventName =
-	| 'DONATION_GOAL_WIDGET_SUM_UPDATED'
-
-type RoomType =
-	| 'ALERT_WIDGETS_GROUP'
-	| 'DONATION_GOAL_WIDGET'
+import { Donation } from "src/donation/donation";
+import { AlertWidgetsGroupEventName, DonationGoalWidgetEventName, RoomType } from "./socket.events";
 
 type EmitAlertWidgetsGroupEventParams =
-	| { eventName: 'DONATION_TO_PLAY_REGULAR', data: { donationAlertWidgetId: ID; } } // TODO: add here some info
+	| {
+		eventName:
+		| AlertWidgetsGroupEventName.DONATION_TO_PLAY_REGULAR
+		| AlertWidgetsGroupEventName.DONATION_TO_PLAY_TEST
+		| AlertWidgetsGroupEventName.DONATION_TO_PLAY_FORCE;
+		alertWidgetsGroupId: ID;
+		data: { donationAlertWidgetId: ID; donation: Donation };
+	}
+	| {
+		eventName: AlertWidgetsGroupEventName.DONATION_TO_STOP;
+		alertWidgetsGroupId: ID;
+		data: { donationAlertWidgetId: ID };
+	}
 
-type EmitDonationGoalWidgetEventParams = 
-	| { eventName: 'DONATION_GOAL_WIDGET_SUM_UPDATED', data: { sum: number } }
+type EmitDonationGoalWidgetEventParams =
+	| {
+		eventName: DonationGoalWidgetEventName.DONATION_GOAL_WIDGET_SUM_UPDATED
+		donationGoalWidgetId: ID;
+		data: { sum: number };
+	}
 
 @Injectable()
 export class SocketService {
@@ -58,31 +58,33 @@ export class SocketService {
 		}
 	}
 
-	async emitDonationGoalWidgetEvent({
-		widgetId,
-	}: {
-		widgetId: ID,
-	}) {
-		
-	}
-
-	emitEvent({
+	async emitAlertWidgetsGroupEvent({
 		eventName,
-		eventData,
-		roomId,
-	}: {
-		eventName: EventName;
-		eventData?: unknown;
-		roomId?: string;
-	}) {
-		if (roomId) {
-			this.server.to(roomId).emit(eventName, eventData);
-		} else {
-			this.server.emit(eventName, eventData);
-		}
+		alertWidgetsGroupId,
+		data,
+	}: EmitAlertWidgetsGroupEventParams) {
+		const roomUrl = this.getRoomUrl({
+			roomType: RoomType.ALERT_WIDGETS_GROUP,
+			roomId: alertWidgetsGroupId
+		});
+		
+		this.server.to(roomUrl).emit(eventName, data);
 	}
 
-	private getRoomUrl = ({ roomType, roomId }: { roomType: RoomType, roomId: ID }) => { 
+	async emitDonationGoalWidgetEvent({
+		eventName,
+		donationGoalWidgetId,
+		data,
+	}: EmitDonationGoalWidgetEventParams) {
+		const roomUrl = this.getRoomUrl({
+			roomType: RoomType.DONATION_GOAL_WIDGET,
+			roomId: donationGoalWidgetId,
+		})
+
+		this.server.to(roomUrl).emit(eventName, data);
+	}
+
+	private getRoomUrl = ({ roomType, roomId }: { roomType: RoomType, roomId: ID }) => {
 		return `${roomType}/${roomId}`
 	}
 }
