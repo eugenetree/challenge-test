@@ -1,6 +1,7 @@
-import { ID } from "src/_common/types";
+import { BaseModel } from 'src/_common/database/database.types';
+import { ID } from 'src/_common/types';
 
-export class AlertWidgetsGroup {
-	id: ID;
-	userId: ID;
-}
+export type AlertWidgetsGroup = {
+  name: string;
+  userId: ID;
+} & BaseModel;

@@ -19,12 +19,13 @@ model User {
   username String? @unique
   token    String  @unique
 
-  ouathProviders        OauthProvider[]
-  donations             Donation[]
-  donationAlertsWidgets DonationAlertWidget[]
-  alertWidgetsGroups    AlertWidgetsGroup[]
-  images                Image[]
-  DonationGoalWidget    DonationGoalWidget[]
+  ouathProviders               OauthProvider[]
+  donations                    Donation[]
+  donationAlertsWidgets        DonationAlertWidget[]
+  alertWidgetsGroups           AlertWidgetsGroup[]
+  images                       Image[]
+  donationGoalWidgets          DonationGoalWidget[]
+  donationAlertWidgetTemplates DonationAlertWidgetTemplate[]
 }
 
 //
@@ -88,17 +89,51 @@ model DonationAlertWidget {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  text           String
+  name           String
   minAmount      Int?
   maxAmount      Int?
   specificAmount Int?
 
-  user                User              @relation(fields: [userId], references: [id])
-  userId              String
-  alertWidgetsGroup   AlertWidgetsGroup @relation(fields: [alertWidgetsGroupId], references: [id])
-  alertWidgetsGroupId String
-  image               Image?            @relation(fields: [imageId], references: [id])
-  imageId             String?
+  user                          User                         @relation(fields: [userId], references: [id])
+  userId                        String
+  alertWidgetsGroup             AlertWidgetsGroup            @relation(fields: [alertWidgetsGroupId], references: [id])
+  alertWidgetsGroupId           String
+  donationAlertWidgetTemplate   DonationAlertWidgetTemplate?
+  donationAlertWidgetTemplateId String?
+}
+
+//
+
+model DonationAlertWidgetTemplate {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name String?
+
+  user                  User                @relation(fields: [userId], references: [id])
+  userId                String
+  donationAlertWidget   DonationAlertWidget @relation(fields: [donationAlertWidgetId], references: [id])
+  donationAlertWidgetId String              @unique
+
+  widgetTemplateTexts WidgetTemplateText[]
+}
+
+//
+
+model WidgetTemplateText {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name            String
+  text            String
+  styleConfig     String @db.Text
+  animationConfig String @db.Text
+  positionConfig  String @db.Text
+
+  donationAlertWidgetTemplate   DonationAlertWidgetTemplate @relation(fields: [donationAlertWidgetTemplateId], references: [id])
+  donationAlertWidgetTemplateId String
 }
 
 //
@@ -109,9 +144,9 @@ model DonationGoalWidget {
   updatedAt DateTime @updatedAt
 
   textWhenRaisingIsInProgress String
-  textWhenRaisingIsFinished  String
-  endDate                    DateTime
-  isWidgetEnabled Boolean
+  textWhenRaisingIsFinished   String
+  endDate                     DateTime
+  isWidgetEnabled             Boolean
 
   user   User   @relation(fields: [userId], references: [id])
   userId String
@@ -125,6 +160,8 @@ model AlertWidgetsGroup {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  name String
 
   user                 User                  @relation(fields: [userId], references: [id])
   userId               String
@@ -143,6 +180,4 @@ model Image {
 
   user   User?   @relation(fields: [userId], references: [id])
   userId String?
-
-  donationAlertWidgets DonationAlertWidget[]
 }
