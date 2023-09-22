@@ -7,7 +7,7 @@ import { PanelRepository } from './panel.repository';
 export class PanelService {
   constructor(private readonly panelRepository: PanelRepository) {}
 
-  getAlertWidgetsPage({ userId }: { userId: ID }) {
-    return this.panelRepository.getAlertWidgetsPage({ userId });
+  getAlertsPage({ userId }: { userId: ID }) {
+    return this.panelRepository.getAlertsPage({ userId });
   }
 }

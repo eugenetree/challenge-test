@@ -7,8 +7,8 @@ import { PanelService } from './panel.service';
 export class PanelController {
   constructor(private readonly panelService: PanelService) {}
 
-  @Get('alert-widgets-page')
+  @Get('alerts-page')
   getAlertWidgetsPage(@UserId() userId: ID) {
-    return this.panelService.getAlertWidgetsPage({ userId });
+    return this.panelService.getAlertsPage({ userId });
   }
 }
