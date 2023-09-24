@@ -8,8 +8,8 @@ import { AuthModule } from './auth/auth.module';
 import { DonationModule } from './donation/donation.module';
 import { DonationPaymentModule } from './donation-payment/donation-payment.module';
 import { SocketModule } from './_common/socket/socket.module';
-import { DonationAlertWidgetModule } from './donation-alert-widget/donation-alert-widget.module';
-import { AlertWidgetsGroupModule } from './alert-widgets-group/alert-widgets-group.module';
+import { DonationAlertModule } from './donation-alert/donation-alert.module';
+import { AlertWidgetModule } from './alert-widget/alert-widget.module';
 import { AppController } from './app.controller';
 import { DonationNotifierModule } from './donation-notifier/donation-notifier.module';
 import { UserMediaModule } from './media/media.module';
@@ -25,8 +25,8 @@ import { PanelModule } from './panel/panel.module';
     AuthModule,
     DonationModule,
     DonationPaymentModule,
-    DonationAlertWidgetModule,
-    AlertWidgetsGroupModule,
+    DonationAlertModule,
+    AlertWidgetModule,
     SocketModule,
     DonationNotifierModule,
     SessionModule,
@@ -40,4 +40,4 @@ import { PanelModule } from './panel/panel.module';
     },
   ],
 })
-export class AppModule { }
+export class AppModule {}

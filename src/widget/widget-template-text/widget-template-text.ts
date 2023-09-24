@@ -23,5 +23,5 @@ export type WidgetTemplateText = {
     width: number;
     height: number;
   };
-  donationAlertWidgetTemplateId: ID;
+  donationAlertTemplateId: ID;
 } & BaseModel;

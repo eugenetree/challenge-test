@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ID } from 'src/_common/types';
-import { AlertWidgetsGroupRepository } from 'src/alert-widgets-group/alert-widgets-group.repository';
+import { AlertWidgetRepository } from 'src/alert-widget/alert-widget.repository';
 import { PanelRepository } from './panel.repository';
 
 @Injectable()

@@ -11,12 +11,12 @@ export class PanelRepository {
   ) {}
 
   async getAlertsPage({ userId }: { userId: ID }) {
-    const data = await this.prisma.alertWidgetsGroup.findMany({
+    const data = await this.prisma.alertWidget.findMany({
       where: { userId },
       include: {
-        donationAlertWidgets: {
+        donationAlerts: {
           include: {
-            donationAlertWidgetTemplate: {
+            donationAlertTemplate: {
               include: { widgetTemplateTexts: true },
             },
           },
@@ -26,19 +26,18 @@ export class PanelRepository {
 
     return data.map((group) => ({
       ...group,
-      donationAlertWidgets: group.donationAlertWidgets.map((widget) => {
-        if (!widget.donationAlertWidgetTemplate) return widget;
+      donationAlerts: group.donationAlerts.map((widget) => {
+        if (!widget.donationAlertTemplate) return widget;
 
         return {
           ...widget,
-          donationAlertWidgetTemplate: {
-            ...widget.donationAlertWidgetTemplate,
+          donationAlertTemplate: {
+            ...widget.donationAlertTemplate,
             widgetTemplateTexts:
-              widget.donationAlertWidgetTemplate?.widgetTemplateTexts.map(
-                (text) =>
-                  this.widgetTemplateTextTransformer.transformFromDbToAppFormat(
-                    text,
-                  ),
+              widget.donationAlertTemplate?.widgetTemplateTexts.map((text) =>
+                this.widgetTemplateTextTransformer.transformFromDbToAppFormat(
+                  text,
+                ),
               ),
           },
         };

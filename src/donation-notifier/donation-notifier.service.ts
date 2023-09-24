@@ -1,134 +1,150 @@
-import { Injectable } from "@nestjs/common";
-import { groupBy } from "lodash";
-import { AlertWidgetsGroupEventName, DonationGoalWidgetEventName } from "src/_common/socket/socket.events";
-import { SocketService } from "src/_common/socket/socket.service";
-import { ID } from "src/_common/types";
-import { DonationAlertWidget } from "src/donation-alert-widget/donation-alert-widget";
-import { DonationAlertWidgetRepository } from "src/donation-alert-widget/donation-alert-widget.repository";
-import { Donation } from "src/donation/donation";
+import { Injectable } from '@nestjs/common';
+import { groupBy } from 'lodash';
+import {
+  AlertWidgetEventName,
+  DonationGoalWidgetEventName,
+} from 'src/_common/socket/socket.events';
+import { SocketService } from 'src/_common/socket/socket.service';
+import { ID } from 'src/_common/types';
+import { DonationAlert } from 'src/donation-alert/donation-alert';
+import { DonationAlertRepository } from 'src/donation-alert/donation-alert.repository';
+import { Donation } from 'src/donation/donation';
 
 @Injectable()
 export class DonationNotifierService {
-	constructor(
-		private readonly socketService: SocketService,
-		private readonly donationAlertWidgetRepository: DonationAlertWidgetRepository,
-	) { }
+  constructor(
+    private readonly socketService: SocketService,
+    private readonly donationAlertRepository: DonationAlertRepository,
+  ) {}
 
-	async notify(donation: Donation) {
-		this.notifyDonationAlertWidgets(donation);
-		this.notifyDonationGoalWidget(donation);
-	}
+  async notify(donation: Donation) {
+    this.notifyAlertWidgets(donation);
+    this.notifyDonationGoalWidget(donation);
+  }
 
-	private async notifyDonationAlertWidgets(donation: Donation) {
-		const donationWidgets = await this.donationAlertWidgetRepository.findMany({
-			where: { userId: donation.recipientId },
-		});
+  private async notifyAlertWidgets(donation: Donation) {
+    const donationWidgets = await this.donationAlertRepository.findMany({
+      where: { userId: donation.recipientId },
+    });
 
-		const donationWidgetsByGroupId = groupBy(donationWidgets, 'alertWidgetsGroupId')
+    const donationWidgetsByGroupId = groupBy(
+      donationWidgets,
+      'alertWidgetsGroupId',
+    );
 
-		for (const [alertWidgetsGroupId, donationWidgets] of Object.entries(donationWidgetsByGroupId)) {
-			this.notifyAlertWidgetsGroup({
-				alertWidgetsGroupId,
-				donationWidgets,
-				donation,
-			})
-		}
-	}
+    for (const [alertWidgetsGroupId, donationWidgets] of Object.entries(
+      donationWidgetsByGroupId,
+    )) {
+      this.notifyAlertWidgetsGroup({
+        alertWidgetsGroupId,
+        donationWidgets,
+        donation,
+      });
+    }
+  }
 
-	// TODO: give better naming
-	private async notifyAlertWidgetsGroup({
-		alertWidgetsGroupId,
-		donationWidgets,
-		donation,
-	}: {
-		alertWidgetsGroupId: ID;
-		donationWidgets: DonationAlertWidget[];
-		donation: Donation;
-	}) {
-		const {
-			widgetsWithSpecificAmount,
-			widgetsWithRangeAmount,
-			widgetsWithMinAmount,
-		} = this.getSortedDonationWidgetsByAmount({ donationWidgets });
+  // TODO: give better naming
+  private async notifyAlertWidgetsGroup({
+    alertWidgetsGroupId,
+    donationWidgets,
+    donation,
+  }: {
+    alertWidgetsGroupId: ID;
+    donationWidgets: DonationAlert[];
+    donation: Donation;
+  }) {
+    const {
+      widgetsWithSpecificAmount,
+      widgetsWithRangeAmount,
+      widgetsWithMinAmount,
+    } = this.getSortedDonationWidgetsByAmount({ donationWidgets });
 
-		for (const widget of widgetsWithSpecificAmount) {
-			if (donation.amount === widget.specificAmount) {
-				this.socketService.emitAlertWidgetsGroupEvent({
-					eventName: AlertWidgetsGroupEventName.DONATION_TO_PLAY_REGULAR,
-					alertWidgetsGroupId,
-					data: { donationAlertWidgetId: widget.id, donation },
-				})
+    for (const widget of widgetsWithSpecificAmount) {
+      if (donation.amount === widget.specificAmount) {
+        this.socketService.emitAlertWidgetsGroupEvent({
+          eventName: AlertWidgetEventName.DONATION_ALERT_TO_PLAY_REGULAR,
+          alertWidgetId: alertWidgetsGroupId,
+          data: { donationAlert: widget.id, donation },
+        });
 
-				return;
-			}
-		}
+        return;
+      }
+    }
 
-		for (const widget of widgetsWithRangeAmount) {
-			if (donation.amount >= widget.minAmount! && donation.amount <= widget.maxAmount!) {
-				this.socketService.emitAlertWidgetsGroupEvent({
-					eventName: AlertWidgetsGroupEventName.DONATION_TO_PLAY_REGULAR,
-					alertWidgetsGroupId,
-					data: { donationAlertWidgetId: widget.id, donation },
-				})
+    for (const widget of widgetsWithRangeAmount) {
+      if (
+        donation.amount >= widget.minAmount! &&
+        donation.amount <= widget.maxAmount!
+      ) {
+        this.socketService.emitAlertWidgetsGroupEvent({
+          eventName: AlertWidgetEventName.DONATION_ALERT_TO_PLAY_REGULAR,
+          alertWidgetId: alertWidgetsGroupId,
+          data: { donationAlert: widget.id, donation },
+        });
 
-				return;
-			}
-		}
+        return;
+      }
+    }
 
-		for (const widget of widgetsWithMinAmount) {
-			if (donation.amount >= widget.minAmount!) {
-				this.socketService.emitAlertWidgetsGroupEvent({
-					eventName: AlertWidgetsGroupEventName.DONATION_TO_PLAY_REGULAR,
-					alertWidgetsGroupId,
-					data: { donationAlertWidgetId: widget.id, donation },
-				})
+    for (const widget of widgetsWithMinAmount) {
+      if (donation.amount >= widget.minAmount!) {
+        this.socketService.emitAlertWidgetsGroupEvent({
+          eventName: AlertWidgetEventName.DONATION_ALERT_TO_PLAY_REGULAR,
+          alertWidgetId: alertWidgetsGroupId,
+          data: { donationAlert: widget.id, donation },
+        });
 
-				return;
-			}
-		}
-	}
+        return;
+      }
+    }
+  }
 
-	private getSortedDonationWidgetsByAmount({
-		donationWidgets,
-	}: {
-		donationWidgets: DonationAlertWidget[],
-	}) {
-		const widgetsWithSpecificAmount: DonationAlertWidget[] = [];
-		const widgetsWithRangeAmount: DonationAlertWidget[] = [];
-		const widgetsWithMinAmount: DonationAlertWidget[] = [];
+  private getSortedDonationWidgetsByAmount({
+    donationWidgets,
+  }: {
+    donationWidgets: DonationAlert[];
+  }) {
+    const widgetsWithSpecificAmount: DonationAlert[] = [];
+    const widgetsWithRangeAmount: DonationAlert[] = [];
+    const widgetsWithMinAmount: DonationAlert[] = [];
 
-		for (const donationWidget of donationWidgets) {
-			if (typeof donationWidget.specificAmount === 'number') {
-				widgetsWithSpecificAmount.push(donationWidget);
-				continue;
-			}
+    for (const donationWidget of donationWidgets) {
+      if (typeof donationWidget.specificAmount === 'number') {
+        widgetsWithSpecificAmount.push(donationWidget);
+        continue;
+      }
 
-			if (typeof donationWidget.maxAmount === 'number' && typeof donationWidget.minAmount === 'number') {
-				widgetsWithRangeAmount.push(donationWidget);
-				continue;
-			}
+      if (
+        typeof donationWidget.maxAmount === 'number' &&
+        typeof donationWidget.minAmount === 'number'
+      ) {
+        widgetsWithRangeAmount.push(donationWidget);
+        continue;
+      }
 
-			widgetsWithMinAmount.push(donationWidget);
-		}
+      widgetsWithMinAmount.push(donationWidget);
+    }
 
-		return {
-			widgetsWithSpecificAmount,
-			widgetsWithRangeAmount,
-			widgetsWithMinAmount: widgetsWithMinAmount.sort((a, b) => b.minAmount! - a.minAmount!),
-		}
-	}
+    return {
+      widgetsWithSpecificAmount,
+      widgetsWithRangeAmount,
+      widgetsWithMinAmount: widgetsWithMinAmount.sort(
+        (a, b) => b.minAmount! - a.minAmount!,
+      ),
+    };
+  }
 
-	private notifyDonationGoalWidget(donation: Donation) {
-		console.log(`processing goal widget alert for ${JSON.stringify(donation)}`)
+  private notifyDonationGoalWidget(donation: Donation) {
+    console.log(`processing goal widget alert for ${JSON.stringify(donation)}`);
 
-		if (donation.donationGoalWidgetId === null) {
-			return;
-		}
+    if (donation.donationGoalWidgetId === null) {
+      return;
+    }
 
-		this.socketService.emitDonationGoalWidgetEvent({
-			eventName: DonationGoalWidgetEventName.DONATION_GOAL_WIDGET_SUM_UPDATED,
-			donationGoalWidgetId: donation.donationGoalWidgetId,
-			data: { sum: donation.amount },
-		})
-	}
+    this.socketService.emitDonationGoalWidgetEvent({
+      eventName: DonationGoalWidgetEventName.DONATION_GOAL_SUM_UPDATED,
+      donationGoalWidgetId: donation.donationGoalWidgetId,
+      data: { sum: donation.amount },
+    });
+  }
 }

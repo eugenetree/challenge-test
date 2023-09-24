@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { PanelService } from './panel.service';
 import { PanelController } from './panel.controller';
-import { AlertWidgetsGroupModule } from 'src/alert-widgets-group/alert-widgets-group.module';
+import { AlertWidgetModule } from 'src/alert-widget/alert-widget.module';
 import { SessionModule } from 'src/auth/session/session.module';
 import { DatabaseModule } from 'src/_common/database/database.module';
 import { PanelRepository } from './panel.repository';
@@ -10,7 +10,7 @@ import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [
-    AlertWidgetsGroupModule,
+    AlertWidgetModule,
     SessionModule,
     DatabaseModule,
     WidgetTemplateTextModule,

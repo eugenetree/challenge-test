@@ -1,13 +1,18 @@
-import { Module } from "@nestjs/common";
-import { DonationNotifierService } from "./donation-notifier.service";
-import { DatabaseModule } from "src/_common/database/database.module";
-import { AlertWidgetsGroupModule } from "src/alert-widgets-group/alert-widgets-group.module";
-import { DonationAlertWidgetModule } from "src/donation-alert-widget/donation-alert-widget.module";
-import { SocketModule } from "src/_common/socket/socket.module";
+import { Module } from '@nestjs/common';
+import { DonationNotifierService } from './donation-notifier.service';
+import { DatabaseModule } from 'src/_common/database/database.module';
+import { AlertWidgetModule } from 'src/alert-widget/alert-widget.module';
+import { DonationAlertModule } from 'src/donation-alert/donation-alert.module';
+import { SocketModule } from 'src/_common/socket/socket.module';
 
 @Module({
-	imports: [DatabaseModule, AlertWidgetsGroupModule, DonationAlertWidgetModule, SocketModule],
-	providers: [DonationNotifierService],
-	exports: [DonationNotifierService],
+  imports: [
+    DatabaseModule,
+    AlertWidgetModule,
+    DonationAlertModule,
+    SocketModule,
+  ],
+  providers: [DonationNotifierService],
+  exports: [DonationNotifierService],
 })
-export class DonationNotifierModule { }
+export class DonationNotifierModule {}
