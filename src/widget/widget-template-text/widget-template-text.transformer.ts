@@ -19,8 +19,6 @@ export class WidgetTemplateTextTransformer {
   transformFromDbToAppFormat(
     entity: PrismaWidgetTemplateText,
   ): WidgetTemplateText {
-    console.log('transfomring', entity);
-
     return {
       ...entity,
       styleConfig: JSON.parse(entity.styleConfig),

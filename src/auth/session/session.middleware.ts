@@ -1,7 +1,7 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import * as session from 'express-session';
-import RedisStore from "connect-redis";
-import { createClient } from "redis";
+import RedisStore from 'connect-redis';
+import { createClient } from 'redis';
 
 const redisClient = createClient({ url: 'redis://redis:6379' });
 redisClient.connect().catch(console.error);
@@ -15,6 +15,5 @@ export class SessionMiddleware implements NestMiddleware {
     cookie: { maxAge: 7 * 24 * 60 * 60 * 1000 },
     store: redisStore,
     saveUninitialized: false,
-  })
-
+  });
 }

@@ -41,7 +41,7 @@ export class DonationAlertWidgetService {
       },
     });
 
-    const { template, textElements } =
+    const { template, widgetTemplateTexts } =
       await this.donationAlertWidgetTemlateService.createDefaultTemplate({
         userId,
         widgetId: createdWidget.id,
@@ -51,7 +51,7 @@ export class DonationAlertWidgetService {
       ...createdWidget,
       template: {
         ...template,
-        textElements,
+        widgetTemplateTexts,
       },
     };
   }

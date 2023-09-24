@@ -26,19 +26,23 @@ export class PanelRepository {
 
     return data.map((group) => ({
       ...group,
-      donationAlertWidgets: group.donationAlertWidgets.map((widget) => ({
-        ...widget,
-        donationAlertWidgetTemplate: {
-          ...widget.donationAlertWidgetTemplate,
-          widgetTemplateTexts:
-            widget.donationAlertWidgetTemplate?.widgetTemplateTexts.map(
-              (text) =>
-                this.widgetTemplateTextTransformer.transformFromDbToAppFormat(
-                  text,
-                ),
-            ),
-        },
-      })),
+      donationAlertWidgets: group.donationAlertWidgets.map((widget) => {
+        if (!widget.donationAlertWidgetTemplate) return widget;
+
+        return {
+          ...widget,
+          donationAlertWidgetTemplate: {
+            ...widget.donationAlertWidgetTemplate,
+            widgetTemplateTexts:
+              widget.donationAlertWidgetTemplate?.widgetTemplateTexts.map(
+                (text) =>
+                  this.widgetTemplateTextTransformer.transformFromDbToAppFormat(
+                    text,
+                  ),
+              ),
+          },
+        };
+      }),
     }));
   }
 }

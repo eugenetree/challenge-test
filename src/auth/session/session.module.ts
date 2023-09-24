@@ -1,4 +1,3 @@
-import * as session from 'express-session';
 import { Module, NestModule } from '@nestjs/common';
 
 import { SessionService } from './session.service';
@@ -10,8 +9,6 @@ import { SessionMiddleware } from './session.middleware';
 })
 export class SessionModule implements NestModule {
   configure: NestModule['configure'] = (consumer) => {
-    consumer
-      .apply(SessionMiddleware)
-      .forRoutes('*')
-  }
+    consumer.apply(SessionMiddleware).forRoutes('*');
+  };
 }

@@ -36,9 +36,9 @@ export class DonationAlertWidgetTemplateService {
         },
       });
 
-    const createdTextElements =
+    const createdWidgetTemplateTexts =
       await this.widgetTemplateTextRepository.createMany({
-        data: defaultTemplate.textElements.map((element) => ({
+        data: defaultTemplate.widgetTemplateTexts.map((element) => ({
           name: element.name,
           text: element.text,
           styleConfig: element.styleConfig,
@@ -50,14 +50,23 @@ export class DonationAlertWidgetTemplateService {
 
     return {
       template: createdTemplate,
-      textElements: createdTextElements,
+      widgetTemplateTexts: createdWidgetTemplateTexts,
     };
   }
 
-  async getDefaultTemplates(): Promise<
-    DonationAlertWidgetTemplateWithElements[]
-  > {
-    return Object.values(defaultDonationAlertWidgetTemplates);
+  async getTemplates({ userId }: { userId: ID }) {
+    const userTemplates =
+      await this.donationAlertWidgetTemplateRepository.findMany({
+        where: { userId },
+        include: { widgetTemplateTexts: true },
+      });
+
+    const defaultTemplates = Object.values(defaultDonationAlertWidgetTemplates);
+
+    return {
+      userTemplates,
+      defaultTemplates,
+    };
   }
 
   async getDefaultPositionConfigs() {

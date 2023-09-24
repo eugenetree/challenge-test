@@ -9,5 +9,5 @@ export type DonationAlertWidgetTemplate = {
 } & BaseModel;
 
 export type DonationAlertWidgetTemplateWithElements = {
-  textElements?: WidgetTemplateText[];
+  widgetTemplateTexts?: WidgetTemplateText[];
 } & DonationAlertWidgetTemplate;

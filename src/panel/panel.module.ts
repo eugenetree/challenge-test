@@ -6,6 +6,7 @@ import { SessionModule } from 'src/auth/session/session.module';
 import { DatabaseModule } from 'src/_common/database/database.module';
 import { PanelRepository } from './panel.repository';
 import { WidgetTemplateTextModule } from 'src/widget/widget-template-text/widget-template-text.module';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [

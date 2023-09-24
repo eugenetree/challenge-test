@@ -8,7 +8,7 @@ type TemplateId = string;
 export const defaultDonationAlertWidgetTemplates: Record<
   TemplateId,
   DonationAlertWidgetTemplate & {
-    textElements: WidgetTemplateText[];
+    widgetTemplateTexts: WidgetTemplateText[];
   }
 > = {
   ['default/main']: {
@@ -18,7 +18,7 @@ export const defaultDonationAlertWidgetTemplates: Record<
     name: 'Стандартне сповіщення',
     userId: 'default',
     donationAlertWidgetId: '-1',
-    textElements: [
+    widgetTemplateTexts: [
       {
         id: '-1',
         createdAt: new Date('1970-01-01T00:00:00.000Z'),
