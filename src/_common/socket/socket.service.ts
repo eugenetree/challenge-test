@@ -9,7 +9,7 @@ import {
   RoomType,
 } from './socket.events';
 
-type EmitAlertWidgetsGroupEventParams =
+type EmitAlertWidgetEventParams =
   | {
       eventName:
         | AlertWidgetEventName.DONATION_ALERT_TO_PLAY_REGULAR
@@ -59,14 +59,14 @@ export class SocketService {
     }
   };
 
-  async emitAlertWidgetsGroupEvent({
+  async emitAlertWidgetEvent({
     eventName,
-    alertWidgetId: alertWidgetsGroupId,
+    alertWidgetId,
     data,
-  }: EmitAlertWidgetsGroupEventParams) {
+  }: EmitAlertWidgetEventParams) {
     const roomUrl = this.getRoomUrl({
       roomType: RoomType.ALERT_WIDGET,
-      roomId: alertWidgetsGroupId,
+      roomId: alertWidgetId,
     });
 
     this.server.to(roomUrl).emit(eventName, data);

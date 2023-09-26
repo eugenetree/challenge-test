@@ -27,16 +27,13 @@ export class DonationNotifierService {
       where: { userId: donation.recipientId },
     });
 
-    const donationWidgetsByGroupId = groupBy(
-      donationWidgets,
-      'alertWidgetsGroupId',
-    );
+    const donationWidgetsByGroupId = groupBy(donationWidgets, 'alertWidgetId');
 
-    for (const [alertWidgetsGroupId, donationWidgets] of Object.entries(
+    for (const [alertWidgetId, donationWidgets] of Object.entries(
       donationWidgetsByGroupId,
     )) {
       this.notifyAlertWidgetsGroup({
-        alertWidgetsGroupId,
+        alertWidgetId,
         donationWidgets,
         donation,
       });
@@ -45,11 +42,11 @@ export class DonationNotifierService {
 
   // TODO: give better naming
   private async notifyAlertWidgetsGroup({
-    alertWidgetsGroupId,
+    alertWidgetId,
     donationWidgets,
     donation,
   }: {
-    alertWidgetsGroupId: ID;
+    alertWidgetId: ID;
     donationWidgets: DonationAlert[];
     donation: Donation;
   }) {
@@ -61,9 +58,9 @@ export class DonationNotifierService {
 
     for (const widget of widgetsWithSpecificAmount) {
       if (donation.amount === widget.specificAmount) {
-        this.socketService.emitAlertWidgetsGroupEvent({
+        this.socketService.emitAlertWidgetEvent({
           eventName: AlertWidgetEventName.DONATION_ALERT_TO_PLAY_REGULAR,
-          alertWidgetId: alertWidgetsGroupId,
+          alertWidgetId,
           data: { donationAlert: widget.id, donation },
         });
 
@@ -76,9 +73,9 @@ export class DonationNotifierService {
         donation.amount >= widget.minAmount! &&
         donation.amount <= widget.maxAmount!
       ) {
-        this.socketService.emitAlertWidgetsGroupEvent({
+        this.socketService.emitAlertWidgetEvent({
           eventName: AlertWidgetEventName.DONATION_ALERT_TO_PLAY_REGULAR,
-          alertWidgetId: alertWidgetsGroupId,
+          alertWidgetId,
           data: { donationAlert: widget.id, donation },
         });
 
@@ -88,9 +85,9 @@ export class DonationNotifierService {
 
     for (const widget of widgetsWithMinAmount) {
       if (donation.amount >= widget.minAmount!) {
-        this.socketService.emitAlertWidgetsGroupEvent({
+        this.socketService.emitAlertWidgetEvent({
           eventName: AlertWidgetEventName.DONATION_ALERT_TO_PLAY_REGULAR,
-          alertWidgetId: alertWidgetsGroupId,
+          alertWidgetId,
           data: { donationAlert: widget.id, donation },
         });
 

@@ -1,6 +1,6 @@
 import { BaseModel } from 'src/_common/database/database.types';
 import { ID } from 'src/_common/types';
-import { WidgetTemplateText } from 'src/widget/widget-template-text/widget-template-text';
+import { UiTextElement } from 'src/ui-elements/ui-text-element';
 
 export type DonationAlertTemplate = {
   name: string;
@@ -9,5 +9,5 @@ export type DonationAlertTemplate = {
 } & BaseModel;
 
 export type DonationAlertTemplateWithElements = {
-  widgetTemplateTexts?: WidgetTemplateText[];
+  uiTextElements: UiTextElement[];
 } & DonationAlertTemplate;

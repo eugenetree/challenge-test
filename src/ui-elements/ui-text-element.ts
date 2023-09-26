@@ -1,7 +1,7 @@
 import { BaseModel } from 'src/_common/database/database.types';
 import { ID } from 'src/_common/types';
 
-export type WidgetTemplateText = {
+export type UiTextElement = {
   name: string;
   text: string;
   styleConfig: {
@@ -23,5 +23,5 @@ export type WidgetTemplateText = {
     width: number;
     height: number;
   };
-  donationAlertTemplateId: ID;
+  donationAlertTemplateId: ID | null;
 } & BaseModel;

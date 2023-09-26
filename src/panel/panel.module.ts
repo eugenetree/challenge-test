@@ -5,7 +5,7 @@ import { AlertWidgetModule } from 'src/alert-widget/alert-widget.module';
 import { SessionModule } from 'src/auth/session/session.module';
 import { DatabaseModule } from 'src/_common/database/database.module';
 import { PanelRepository } from './panel.repository';
-import { WidgetTemplateTextModule } from 'src/widget/widget-template-text/widget-template-text.module';
+import { UiTextElementModule } from 'src/ui-elements/ui-text-element.module';
 import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
@@ -13,7 +13,7 @@ import { AuthModule } from 'src/auth/auth.module';
     AlertWidgetModule,
     SessionModule,
     DatabaseModule,
-    WidgetTemplateTextModule,
+    UiTextElementModule,
   ],
   providers: [PanelService, PanelRepository],
   exports: [PanelService],

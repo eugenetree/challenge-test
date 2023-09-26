@@ -5,17 +5,14 @@ import { UserId } from 'src/auth/session/session.decorator';
 import { ID } from 'src/_common/types';
 
 @UseGuards(AuthSessionGuard)
-@Controller('alert-widgets-groups/:alertWidgetsGroupId/widgets')
+@Controller('alert-widgets/:alertWidgetId/alerts')
 export class DonationAlertController {
   constructor(private readonly donationAlertService: DonationAlertService) {}
 
   @Post()
-  create(
-    @Param('alertWidgetsGroupId') alertWidgetsGroupId: string,
-    @UserId() userId: ID,
-  ) {
+  create(@Param('alertWidgetId') alertWidgetId: string, @UserId() userId: ID) {
     return this.donationAlertService.create({
-      alertWidgetsGroupId,
+      alertWidgetId,
       userId,
     });
   }

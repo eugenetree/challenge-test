@@ -3,9 +3,7 @@ import { AlertWidgetRepository } from './alert-widget/alert-widget.repository';
 
 @Controller()
 export class AppController {
-  constructor(
-    private readonly alertWidgetsGroupRepository: AlertWidgetRepository,
-  ) {}
+  constructor(private readonly alertWidgetRepository: AlertWidgetRepository) {}
 
   @Get('ping')
   async pingGet() {
@@ -14,7 +12,7 @@ export class AppController {
 
   @Get('test')
   test() {
-    return this.alertWidgetsGroupRepository.findMany({
+    return this.alertWidgetRepository.findMany({
       where: { userId: '80012aa2-afbd-45d2-8917-2dd8a290a5a5' },
       include: { donationAlerts: true },
     });

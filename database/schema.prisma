@@ -116,12 +116,12 @@ model DonationAlertTemplate {
   donationAlert   DonationAlert @relation(fields: [donationAlertId], references: [id])
   donationAlertId String        @unique
 
-  widgetTemplateTexts WidgetTemplateText[]
+  uiTextElements UiTextElement[]
 }
 
 //
 
-model WidgetTemplateText {
+model UiTextElement {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -132,8 +132,8 @@ model WidgetTemplateText {
   animationConfig String @db.Text
   positionConfig  String @db.Text
 
-  donationAlertTemplate   DonationAlertTemplate @relation(fields: [donationAlertTemplateId], references: [id])
-  donationAlertTemplateId String
+  donationAlertTemplate   DonationAlertTemplate? @relation(fields: [donationAlertTemplateId], references: [id])
+  donationAlertTemplateId String?
 }
 
 //

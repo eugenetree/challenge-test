@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/_common/database/prisma.service';
 import { ID } from 'src/_common/types';
-import { WidgetTemplateTextTransformer } from 'src/widget/widget-template-text/widget-template-text.transformer';
+import { UiTextElementTransformer } from 'src/ui-elements/ui-text-element.transformer';
 
 @Injectable()
 export class PanelRepository {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly widgetTemplateTextTransformer: WidgetTemplateTextTransformer,
+    private readonly uiTextElementTransformer: UiTextElementTransformer,
   ) {}
 
   async getAlertsPage({ userId }: { userId: ID }) {
@@ -17,7 +17,7 @@ export class PanelRepository {
         donationAlerts: {
           include: {
             donationAlertTemplate: {
-              include: { widgetTemplateTexts: true },
+              include: { uiTextElements: true },
             },
           },
         },
@@ -33,12 +33,10 @@ export class PanelRepository {
           ...widget,
           donationAlertTemplate: {
             ...widget.donationAlertTemplate,
-            widgetTemplateTexts:
-              widget.donationAlertTemplate?.widgetTemplateTexts.map((text) =>
-                this.widgetTemplateTextTransformer.transformFromDbToAppFormat(
-                  text,
-                ),
-              ),
+            uiTextElements: widget.donationAlertTemplate?.uiTextElements.map(
+              (text) =>
+                this.uiTextElementTransformer.transformFromDbToAppFormat(text),
+            ),
           },
         };
       }),

@@ -5,12 +5,12 @@ import { UserId } from 'src/auth/session/session.decorator';
 import { AlertWidgetService } from './alert-widget.service';
 
 @UseGuards(AuthSessionGuard)
-@Controller('alert-widgets-groups')
+@Controller('alert-widgets')
 export class AlertWidgetController {
-  constructor(private readonly alertWidgetsGroupService: AlertWidgetService) {}
+  constructor(private readonly alertWidgetService: AlertWidgetService) {}
 
   @Post()
   create(@UserId() userId: ID) {
-    return this.alertWidgetsGroupService.create({ userId });
+    return this.alertWidgetService.create({ userId });
   }
 }

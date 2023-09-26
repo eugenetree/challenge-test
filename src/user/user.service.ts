@@ -17,7 +17,7 @@ export class UserService {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly oauthProviderRepository: OauthProviderRepository,
-    private readonly alertWidgetsGroupService: AlertWidgetService,
+    private readonly alertWidgetService: AlertWidgetService,
     private readonly donationAlertService: DonationAlertService,
   ) {}
 
@@ -41,20 +41,20 @@ export class UserService {
       },
     });
 
-    const createdAlertWidgetsGroup = await this.alertWidgetsGroupService.create(
-      { userId: createdUser.id },
-    );
-
-    const createdWidget = await this.donationAlertService.create({
+    const createdAlertWidget = await this.alertWidgetService.create({
       userId: createdUser.id,
-      alertWidgetsGroupId: createdAlertWidgetsGroup.id,
+    });
+
+    const createdDonationAlert = await this.donationAlertService.create({
+      userId: createdUser.id,
+      alertWidgetId: createdAlertWidget.id,
     });
 
     return {
       ...createdUser,
-      alertWidgetsGroup: {
-        ...createdAlertWidgetsGroup,
-        widgets: [createdWidget],
+      alertWidget: {
+        ...createdAlertWidget,
+        alerts: [createdDonationAlert],
       },
     };
   };

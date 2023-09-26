@@ -4,14 +4,14 @@ import {
   defaultDonationAlertTemplates,
 } from './donation-alert-template.constants';
 import { DonationAlertTemplateRepository } from './donation-alert-template.repository';
-import { WidgetTemplateTextRepository } from 'src/widget/widget-template-text/widget-template-text.repository';
+import { UiTextElementRepository } from 'src/ui-elements/ui-text-element.repository';
 import { ID } from 'src/_common/types';
 
 @Injectable()
 export class DonationAlertTemplateService {
   constructor(
     private readonly donationAlertTemplateRepository: DonationAlertTemplateRepository,
-    private readonly widgetTemplateTextRepository: WidgetTemplateTextRepository,
+    private readonly uiTextElementRepository: UiTextElementRepository,
   ) {}
 
   async createDefaultTemplate({
@@ -31,9 +31,9 @@ export class DonationAlertTemplateService {
       },
     });
 
-    const createdWidgetTemplateTexts =
-      await this.widgetTemplateTextRepository.createMany({
-        data: defaultTemplate.widgetTemplateTexts.map((element) => ({
+    const createdUiTextElements = await this.uiTextElementRepository.createMany(
+      {
+        data: defaultTemplate.uiTextElements.map((element) => ({
           name: element.name,
           text: element.text,
           styleConfig: element.styleConfig,
@@ -41,18 +41,19 @@ export class DonationAlertTemplateService {
           positionConfig: element.positionConfig,
           donationAlertTemplateId: createdTemplate.id,
         })),
-      });
+      },
+    );
 
     return {
       template: createdTemplate,
-      widgetTemplateTexts: createdWidgetTemplateTexts,
+      uiTextElements: createdUiTextElements,
     };
   }
 
   async getTemplates({ userId }: { userId: ID }) {
     const userTemplates = await this.donationAlertTemplateRepository.findMany({
       where: { userId },
-      include: { widgetTemplateTexts: true },
+      include: { uiTextElements: true },
     });
 
     const defaultTemplates = Object.values(defaultDonationAlertTemplates);

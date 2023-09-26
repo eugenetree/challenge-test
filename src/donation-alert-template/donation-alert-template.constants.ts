@@ -1,4 +1,4 @@
-import { WidgetTemplateText } from 'src/widget/widget-template-text/widget-template-text';
+import { UiTextElement } from 'src/ui-elements/ui-text-element';
 import { DonationAlertTemplate } from './donation-alert-template.types';
 
 type TemplateId = string;
@@ -8,7 +8,7 @@ type TemplateId = string;
 export const defaultDonationAlertTemplates: Record<
   TemplateId,
   DonationAlertTemplate & {
-    widgetTemplateTexts: WidgetTemplateText[];
+    uiTextElements: UiTextElement[];
   }
 > = {
   ['default/main']: {
@@ -18,7 +18,7 @@ export const defaultDonationAlertTemplates: Record<
     name: 'Стандартне сповіщення',
     userId: 'default',
     donationAlertId: '-1',
-    widgetTemplateTexts: [
+    uiTextElements: [
       {
         id: '-1',
         createdAt: new Date('1970-01-01T00:00:00.000Z'),

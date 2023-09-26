@@ -13,22 +13,22 @@ export class DonationAlertService {
   async create({
     name,
     userId,
-    alertWidgetsGroupId,
+    alertWidgetId,
   }: {
     name?: string;
     userId: ID;
-    alertWidgetsGroupId: ID;
+    alertWidgetId: ID;
   }) {
     let preparedName = name;
 
     if (!name) {
       const widgetsInGroupCount = await this.donationAlertRepository.count({
-        where: { userId, alertWidgetId: alertWidgetsGroupId },
+        where: { userId, alertWidgetId },
       });
 
-      preparedName = `Варіація № ${widgetsInGroupCount + 1}`;
+      preparedName = `Сповіщення № ${widgetsInGroupCount + 1}`;
     } else {
-      preparedName = 'Варіація № 1';
+      preparedName = 'Сповіщення № 1';
     }
 
     const createdWidget = await this.donationAlertRepository.create({
@@ -36,11 +36,11 @@ export class DonationAlertService {
         name: preparedName,
         minAmount: 1,
         userId,
-        alertWidgetId: alertWidgetsGroupId,
+        alertWidgetId,
       },
     });
 
-    const { template, widgetTemplateTexts } =
+    const { template, uiTextElements } =
       await this.donationAlertTemlateService.createDefaultTemplate({
         userId,
         widgetId: createdWidget.id,
@@ -50,7 +50,7 @@ export class DonationAlertService {
       ...createdWidget,
       template: {
         ...template,
-        widgetTemplateTexts,
+        uiTextElements,
       },
     };
   }

@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { WidgetTemplateText as PrismaWidgetTemplateText } from '@prisma/client';
+import { UiTextElement as PrismaUiTextElement } from '@prisma/client';
 import { OmitBaseModel } from 'src/_common/database/database.types';
-import { WidgetTemplateText } from './widget-template-text';
+import { UiTextElement } from './ui-text-element';
 
 @Injectable()
-export class WidgetTemplateTextTransformer {
+export class UiTextElementTransformer {
   transformFromAppToDbFormat(
-    entity: OmitBaseModel<WidgetTemplateText>,
-  ): OmitBaseModel<PrismaWidgetTemplateText> {
+    entity: OmitBaseModel<UiTextElement>,
+  ): OmitBaseModel<PrismaUiTextElement> {
     return {
       ...entity,
       styleConfig: JSON.stringify(entity.styleConfig),
@@ -16,9 +16,7 @@ export class WidgetTemplateTextTransformer {
     };
   }
 
-  transformFromDbToAppFormat(
-    entity: PrismaWidgetTemplateText,
-  ): WidgetTemplateText {
+  transformFromDbToAppFormat(entity: PrismaUiTextElement): UiTextElement {
     return {
       ...entity,
       styleConfig: JSON.parse(entity.styleConfig),
