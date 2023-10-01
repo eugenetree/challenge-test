@@ -16,10 +16,10 @@ export class DonationAlertTemplateService {
 
   async createDefaultTemplate({
     userId,
-    widgetId,
+    donationAlertId,
   }: {
     userId: ID;
-    widgetId: ID;
+    donationAlertId: ID;
   }) {
     const defaultTemplate = defaultDonationAlertTemplates['default/main'];
 
@@ -27,7 +27,7 @@ export class DonationAlertTemplateService {
       data: {
         name: defaultTemplate.name,
         userId,
-        donationAlertId: widgetId,
+        donationAlertId,
       },
     });
 

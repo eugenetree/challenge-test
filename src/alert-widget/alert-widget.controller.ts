@@ -1,4 +1,4 @@
-import { Controller, Post, UseGuards } from '@nestjs/common';
+import { Controller, Delete, Get, Post, UseGuards } from '@nestjs/common';
 import { ID } from 'src/_common/types';
 import { AuthSessionGuard } from 'src/auth/auth-session.guard';
 import { UserId } from 'src/auth/session/session.decorator';
@@ -9,8 +9,18 @@ import { AlertWidgetService } from './alert-widget.service';
 export class AlertWidgetController {
   constructor(private readonly alertWidgetService: AlertWidgetService) {}
 
+  @Get()
+  findAll(@UserId() userId: ID) {
+    return this.alertWidgetService.findAll({ userId });
+  }
+
   @Post()
   create(@UserId() userId: ID) {
     return this.alertWidgetService.create({ userId });
+  }
+
+  @Delete(':widgetId')
+  delete(@UserId() userId: ID) {
+    return;
   }
 }

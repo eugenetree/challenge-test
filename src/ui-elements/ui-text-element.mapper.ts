@@ -4,8 +4,8 @@ import { OmitBaseModel } from 'src/_common/database/database.types';
 import { UiTextElement } from './ui-text-element';
 
 @Injectable()
-export class UiTextElementTransformer {
-  transformFromAppToDbFormat(
+export class UiTextElementMapper {
+  fromAppToDb(
     entity: OmitBaseModel<UiTextElement>,
   ): OmitBaseModel<PrismaUiTextElement> {
     return {
@@ -16,7 +16,7 @@ export class UiTextElementTransformer {
     };
   }
 
-  transformFromDbToAppFormat(entity: PrismaUiTextElement): UiTextElement {
+  fromDbToApp(entity: PrismaUiTextElement): UiTextElement {
     return {
       ...entity,
       styleConfig: JSON.parse(entity.styleConfig),

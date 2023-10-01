@@ -1,36 +1,58 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/_common/database/prisma.service';
-import { AlertWidget } from './alert-widget';
-import { Optional } from 'src/_common/types';
+import { AlertWidget, AlertWidgetWithRelations } from './alert-widget';
 import { OmitBaseModel } from 'src/_common/database/database.types';
+import { AlertWidgetMapper } from './alert-widget.mapper';
 
 @Injectable()
 export class AlertWidgetRepository {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly alertWidgetMapper: AlertWidgetMapper,
+  ) {}
 
-  create = async ({
+  async create({
     data,
   }: {
     data: OmitBaseModel<AlertWidget>;
-  }): Promise<AlertWidget> => {
-    return this.prisma.alertWidget.create({ data });
-  };
+  }): Promise<AlertWidgetWithRelations> {
+    console.log(`calling with ${JSON.stringify(data)}`);
+    const createdWidget = await this.prisma.alertWidget.create({ data });
+    return {
+      ...createdWidget,
+      donationAlerts: [],
+    };
+  }
 
-  findMany = async ({
+  async findMany({
     where,
     include,
   }: {
     where: Partial<AlertWidget>;
     include?: { donationAlerts?: boolean };
-  }): Promise<AlertWidget[]> => {
-    return this.prisma.alertWidget.findMany({ where, include });
-  };
+  }): Promise<AlertWidgetWithRelations[]> {
+    const data = await this.prisma.alertWidget.findMany({
+      where,
+      orderBy: { createdAt: 'asc' },
+      include: {
+        donationAlerts: {
+          where: { donationAlertTemplate: { isNot: null } },
+          orderBy: { createdAt: 'asc' },
+          include: {
+            donationAlertTemplate: {
+              include: { uiTextElements: true },
+            },
+          },
+        },
+      },
+    });
 
-  count = async ({
-    where,
-  }: {
-    where: Partial<AlertWidget>;
-  }): Promise<number> => {
+    return data.map((alertWidget) => {
+      return this.alertWidgetMapper.fromDbToApp(alertWidget);
+    });
+  }
+
+  async count({ where }: { where: Partial<AlertWidget> }): Promise<number> {
     return this.prisma.alertWidget.count({ where });
-  };
+  }
 }

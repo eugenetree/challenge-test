@@ -93,13 +93,14 @@ model DonationAlert {
   minAmount      Int?
   maxAmount      Int?
   specificAmount Int?
+  isEnabled      Boolean
+  duration       Int
 
-  user                    User                   @relation(fields: [userId], references: [id])
-  userId                  String
-  alertWidget             AlertWidget            @relation(fields: [alertWidgetId], references: [id])
-  alertWidgetId           String
-  donationAlertTemplate   DonationAlertTemplate?
-  donationAlertTemplateId String?
+  user                  User                   @relation(fields: [userId], references: [id])
+  userId                String
+  alertWidget           AlertWidget            @relation(fields: [alertWidgetId], references: [id])
+  alertWidgetId         String
+  donationAlertTemplate DonationAlertTemplate?
 }
 
 //
@@ -161,7 +162,8 @@ model AlertWidget {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  name String
+  name      String
+  isEnabled Boolean
 
   user           User            @relation(fields: [userId], references: [id])
   userId         String

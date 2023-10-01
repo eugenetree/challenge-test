@@ -31,10 +31,12 @@ export class DonationAlertService {
       preparedName = 'Сповіщення № 1';
     }
 
-    const createdWidget = await this.donationAlertRepository.create({
+    const createdDonationAlertId = await this.donationAlertRepository.create({
       data: {
         name: preparedName,
         minAmount: 1,
+        isEnabled: true,
+        duration: 10,
         userId,
         alertWidgetId,
       },
@@ -43,11 +45,11 @@ export class DonationAlertService {
     const { template, uiTextElements } =
       await this.donationAlertTemlateService.createDefaultTemplate({
         userId,
-        widgetId: createdWidget.id,
+        donationAlertId: createdDonationAlertId.id,
       });
 
     return {
-      ...createdWidget,
+      ...createdDonationAlertId,
       template: {
         ...template,
         uiTextElements,

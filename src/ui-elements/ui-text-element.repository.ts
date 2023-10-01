@@ -2,13 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { OmitBaseModel } from 'src/_common/database/database.types';
 import { PrismaService } from 'src/_common/database/prisma.service';
 import { UiTextElement } from './ui-text-element';
-import { UiTextElementTransformer } from './ui-text-element.transformer';
+import { UiTextElementMapper } from './ui-text-element.mapper';
 
 @Injectable()
 export class UiTextElementRepository {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly uiTextElementTransformer: UiTextElementTransformer,
+    private readonly uiTextElementTransformer: UiTextElementMapper,
   ) {}
 
   async createMany({ data }: { data: OmitBaseModel<UiTextElement>[] }) {
@@ -16,9 +16,7 @@ export class UiTextElementRepository {
       return await Promise.all(
         data.map(async (entity) => {
           return await prisma.uiTextElement.create({
-            data: this.uiTextElementTransformer.transformFromAppToDbFormat(
-              entity,
-            ),
+            data: this.uiTextElementTransformer.fromAppToDb(entity),
           });
         }),
       );

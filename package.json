@@ -33,6 +33,7 @@
     "connect-redis": "^7.1.0",
     "crypto": "^1.0.1",
     "express-session": "^1.17.3",
+    "immer": "^10.0.2",
     "nestjs-zod": "^2.3.3",
     "redis": "^4.6.8",
     "reflect-metadata": "^0.1.13",

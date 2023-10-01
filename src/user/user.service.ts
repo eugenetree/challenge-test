@@ -1,16 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import * as crypto from 'crypto';
-import { User } from './user';
 import { UserRepository } from './user.repository';
-import { OauthProvider } from 'src/oauth-provider/oauth-provider';
-import { AlertWidget } from 'src/alert-widget/alert-widget';
-import { DonationAlert } from 'src/donation-alert/donation-alert';
 import { OauthProviderRepository } from 'src/oauth-provider/oauth-provider.repository';
-import { AlertWidgetRepository } from 'src/alert-widget/alert-widget.repository';
-import { DonationAlertRepository } from 'src/donation-alert/donation-alert.repository';
-import { MediaService } from 'src/media/media.service';
 import { DonationAlertService } from 'src/donation-alert/donation-alert.service';
 import { AlertWidgetService } from 'src/alert-widget/alert-widget.service';
+import { User } from './user';
 
 @Injectable()
 export class UserService {
@@ -26,7 +20,7 @@ export class UserService {
     refreshToken,
     oauthProviderProfileId,
     type,
-  }) => {
+  }): Promise<User> => {
     const createdUser = await this.userRepository.create({
       data: { token: this.generateUniqueToken() },
     });
@@ -45,18 +39,12 @@ export class UserService {
       userId: createdUser.id,
     });
 
-    const createdDonationAlert = await this.donationAlertService.create({
+    await this.donationAlertService.create({
       userId: createdUser.id,
       alertWidgetId: createdAlertWidget.id,
     });
 
-    return {
-      ...createdUser,
-      alertWidget: {
-        ...createdAlertWidget,
-        alerts: [createdDonationAlert],
-      },
-    };
+    return createdUser;
   };
 
   private generateUniqueToken(): string {

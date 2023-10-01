@@ -7,13 +7,13 @@ import {
 } from '@prisma/client';
 import { OmitBaseModel } from 'src/_common/database/database.types';
 import { Optional } from 'src/_common/types';
-import { UiTextElementTransformer } from 'src/ui-elements/ui-text-element.transformer';
+import { UiTextElementMapper } from 'src/ui-elements/ui-text-element.mapper';
 
 @Injectable()
 export class DonationAlertTemplateRepository {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly uiTextElementTransformer: UiTextElementTransformer,
+    private readonly uiTextElementTransformer: UiTextElementMapper,
   ) {}
 
   async create({ data }: { data: OmitBaseModel<DonationAlertTemplate> }) {
@@ -47,7 +47,7 @@ export class DonationAlertTemplateRepository {
     ).map((template) => ({
       ...template,
       uiTextElements: template.uiTextElements.map((templateText) =>
-        this.uiTextElementTransformer.transformFromDbToAppFormat(templateText),
+        this.uiTextElementTransformer.fromDbToApp(templateText),
       ),
     }));
   }
