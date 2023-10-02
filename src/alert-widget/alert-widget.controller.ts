@@ -1,4 +1,11 @@
-import { Controller, Delete, Get, Post, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { ID } from 'src/_common/types';
 import { AuthSessionGuard } from 'src/auth/auth-session.guard';
 import { UserId } from 'src/auth/session/session.decorator';
@@ -10,8 +17,15 @@ export class AlertWidgetController {
   constructor(private readonly alertWidgetService: AlertWidgetService) {}
 
   @Get()
-  findAll(@UserId() userId: ID) {
-    return this.alertWidgetService.findAll({ userId });
+  async findMany(
+    @Query('with-relations') withRelations: boolean,
+    @UserId() userId: ID,
+  ) {
+    if (withRelations) {
+      return this.alertWidgetService.findManyWithRelations({ userId });
+    }
+
+    return this.alertWidgetService.findMany({ userId });
   }
 
   @Post()

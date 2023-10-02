@@ -15,18 +15,20 @@ export class AlertWidgetRepository {
     data,
   }: {
     data: OmitBaseModel<AlertWidget>;
-  }): Promise<AlertWidgetWithRelations> {
-    console.log(`calling with ${JSON.stringify(data)}`);
-    const createdWidget = await this.prisma.alertWidget.create({ data });
-    return {
-      ...createdWidget,
-      donationAlerts: [],
-    };
+  }): Promise<AlertWidget> {
+    return await this.prisma.alertWidget.create({ data });
   }
 
   async findMany({
     where,
-    include,
+  }: {
+    where: Partial<AlertWidget>;
+  }): Promise<AlertWidget[]> {
+    return this.prisma.alertWidget.findMany({ where });
+  }
+
+  async findManyWithRelations({
+    where,
   }: {
     where: Partial<AlertWidget>;
     include?: { donationAlerts?: boolean };

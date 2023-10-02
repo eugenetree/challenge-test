@@ -1,16 +1,22 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/_common/database/prisma.service';
-import { DonationAlert } from './donation-alert';
+import { DonationAlert, DonationAlertWithRelations } from './donation-alert';
 import { Optional } from 'src/_common/types';
+import { OmitBaseModel } from 'src/_common/database/database.types';
+import { Donation } from 'src/donation/donation';
+import { DonationAlertMapper } from './donation-alert.mapper';
 
-type DonationAlertInput = Optional<
+type DonationAlertInput = OmitBaseModel<
   DonationAlert,
-  'id' | 'maxAmount' | 'minAmount' | 'specificAmount'
+  'maxAmount' | 'minAmount' | 'specificAmount'
 >;
 
 @Injectable()
 export class DonationAlertRepository {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly donationAlertMapper: DonationAlertMapper,
+  ) {}
 
   create = async ({
     data,
@@ -19,6 +25,23 @@ export class DonationAlertRepository {
   }): Promise<DonationAlert> => {
     return this.prisma.donationAlert.create({ data });
   };
+
+  findOne({ where }: { where: Partial<DonationAlert> }) {
+    return this.prisma.donationAlert.findFirst({
+      where: { ...where, donationAlertTemplate: { isNot: null } },
+    });
+  }
+
+  findOneWithRelations({
+    where,
+  }: {
+    where: Partial<DonationAlertWithRelations>;
+  }) {
+    return this.prisma.donationAlert.findFirst({
+      where: { ...where, donationAlertTemplate: { isNot: null } },
+      include: { donationAlertTemplate: { include: { uiTextElements: true } } },
+    });
+  }
 
   findMany = async ({
     where,

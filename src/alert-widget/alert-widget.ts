@@ -4,11 +4,11 @@ import { DonationAlertTemplate } from 'src/donation-alert-template/donation-aler
 import { DonationAlert } from 'src/donation-alert/donation-alert';
 import { UiTextElement } from 'src/ui-elements/ui-text-element';
 
-export type AlertWidget = {
+export type AlertWidget = BaseModel & {
   name: string;
   isEnabled: boolean;
   userId: ID;
-} & BaseModel;
+};
 
 export type AlertWidgetWithRelations = AlertWidget & {
   donationAlerts: (DonationAlert & {

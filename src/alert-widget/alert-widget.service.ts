@@ -20,7 +20,7 @@ export class AlertWidgetService {
   }: {
     userId: ID;
     name?: string;
-  }): Promise<AlertWidgetWithRelations> {
+  }): Promise<AlertWidget> {
     if (name) {
       return this.alertWidgetRepository.create({
         data: { name, userId, isEnabled: true },
@@ -31,8 +31,6 @@ export class AlertWidgetService {
       where: { userId },
     });
 
-    console.log('creating widget');
-
     return this.alertWidgetRepository.create({
       data: {
         name: `Віджет № ${groupsCount + 1}`,
@@ -42,12 +40,16 @@ export class AlertWidgetService {
     });
   }
 
-  async findAll({
+  async findMany({ userId }: { userId: ID }): Promise<AlertWidget[]> {
+    return this.alertWidgetRepository.findMany({ where: { userId } });
+  }
+
+  async findManyWithRelations({
     userId,
   }: {
     userId: ID;
   }): Promise<AlertWidgetWithRelations[]> {
-    return this.alertWidgetRepository.findMany({
+    return this.alertWidgetRepository.findManyWithRelations({
       where: { userId },
     });
   }

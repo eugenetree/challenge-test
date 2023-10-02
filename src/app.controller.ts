@@ -14,7 +14,6 @@ export class AppController {
   test() {
     return this.alertWidgetRepository.findMany({
       where: { userId: '80012aa2-afbd-45d2-8917-2dd8a290a5a5' },
-      include: { donationAlerts: true },
     });
   }
 }
