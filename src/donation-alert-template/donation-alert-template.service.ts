@@ -6,6 +6,11 @@ import {
 import { DonationAlertTemplateRepository } from './donation-alert-template.repository';
 import { UiTextElementRepository } from 'src/ui-elements/ui-text-element.repository';
 import { ID } from 'src/_common/types';
+import {
+  DonationAlertTemplate,
+  DonationAlertTemplateWithDonationAlert,
+  DonationAlertTemplateWithNested,
+} from './donation-alert-template.types';
 
 @Injectable()
 export class DonationAlertTemplateService {
@@ -50,18 +55,33 @@ export class DonationAlertTemplateService {
     };
   }
 
-  async getTemplates({ userId }: { userId: ID }) {
-    const userTemplates = await this.donationAlertTemplateRepository.findMany({
+  async findMany({ userId }: { userId: ID }): Promise<DonationAlertTemplate[]> {
+    return this.donationAlertTemplateRepository.findMany({ where: { userId } });
+  }
+
+  async findManyWithDonationAlert({
+    userId,
+  }: {
+    userId: ID;
+  }): Promise<DonationAlertTemplateWithDonationAlert[]> {
+    return this.donationAlertTemplateRepository.findManyWithDonationAlert({
       where: { userId },
-      include: { uiTextElements: true },
     });
+  }
 
+  async findManyWithNested({
+    userId,
+  }: {
+    userId: ID;
+  }): Promise<DonationAlertTemplateWithNested[]> {
+    return this.donationAlertTemplateRepository.findManyWithNested({
+      where: { userId },
+    });
+  }
+
+  async getDefaultTemplates(): Promise<DonationAlertTemplate[]> {
     const defaultTemplates = Object.values(defaultDonationAlertTemplates);
-
-    return {
-      userTemplates,
-      defaultTemplates,
-    };
+    return defaultTemplates;
   }
 
   async getDefaultPositionConfigs() {
