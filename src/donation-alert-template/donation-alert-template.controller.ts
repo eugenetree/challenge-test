@@ -13,7 +13,7 @@ export class DonationAlertTemplateController {
 
   @Get()
   async findTemplates(
-    @Query('include') include: 'donation-alert' | 'nested',
+    @Query('include') include: 'donation-alert',
     @Query('type') type: 'default',
     @UserId() userId: ID,
   ) {
@@ -23,10 +23,6 @@ export class DonationAlertTemplateController {
       return this.donationAlertTemplateService.findManyWithDonationAlert({
         userId,
       });
-    }
-
-    if (include === 'nested') {
-      return this.donationAlertTemplateService.findManyWithNested({ userId });
     }
 
     if (type === 'default') {

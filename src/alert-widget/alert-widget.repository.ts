@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/_common/database/prisma.service';
-import { AlertWidget, AlertWidgetWithRelations } from './alert-widget';
+import { AlertWidget, AlertWidgetWithNested } from './alert-widget';
 import { OmitBaseModel } from 'src/_common/database/database.types';
 import { AlertWidgetMapper } from './alert-widget.mapper';
 
@@ -27,30 +27,28 @@ export class AlertWidgetRepository {
     return this.prisma.alertWidget.findMany({ where });
   }
 
-  async findManyWithRelations({
+  async findManyWithNested({
     where,
   }: {
     where: Partial<AlertWidget>;
     include?: { donationAlerts?: boolean };
-  }): Promise<AlertWidgetWithRelations[]> {
+  }): Promise<AlertWidgetWithNested[]> {
     const data = await this.prisma.alertWidget.findMany({
       where,
       orderBy: { createdAt: 'asc' },
       include: {
         donationAlerts: {
-          where: { donationAlertTemplate: { isNot: null } },
+          where: { template: { isNot: null } },
           orderBy: { createdAt: 'asc' },
           include: {
-            donationAlertTemplate: {
-              include: { uiTextElements: true },
-            },
+            template: true,
           },
         },
       },
     });
 
     return data.map((alertWidget) => {
-      return this.alertWidgetMapper.fromDbToApp(alertWidget);
+      return this.alertWidgetMapper.fromDbToAppWithNested(alertWidget);
     });
   }
 

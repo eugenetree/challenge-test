@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import {
   DonationAlertTemplate,
   DonationAlertTemplateWithDonationAlert,
-  DonationAlertTemplateWithNested,
 } from './donation-alert-template.types';
 import { PrismaService } from 'src/_common/database/prisma.service';
 import {
@@ -12,64 +11,74 @@ import {
 import { OmitBaseModel } from 'src/_common/database/database.types';
 import { Optional } from 'src/_common/types';
 import { UiTextElementMapper } from 'src/ui-elements/ui-text-element.mapper';
+import { DonationAlertTemplateMapper } from './donation-alert-template.mapper';
 
 @Injectable()
 export class DonationAlertTemplateRepository {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly uiTextElementTransformer: UiTextElementMapper,
+    private readonly donaitonAlertTemplateMapper: DonationAlertTemplateMapper,
   ) {}
 
-  async create({ data }: { data: OmitBaseModel<DonationAlertTemplate> }) {
-    return this.prisma.donationAlertTemplate.create({
-      data,
+  async create({
+    data,
+  }: {
+    data: OmitBaseModel<DonationAlertTemplate>;
+  }): Promise<DonationAlertTemplate> {
+    const template = await this.prisma.donationAlertTemplate.create({
+      data: {
+        ...data,
+        elements: JSON.stringify(data.elements),
+      },
     });
+
+    return this.donaitonAlertTemplateMapper.fromDbToApp(template);
   }
 
-  async findOne({ where }: { where: Partial<DonationAlertTemplate> }) {
-    return this.prisma.donationAlertTemplate.findFirst({ where });
+  async findOne({
+    where,
+  }: {
+    where: Partial<Omit<DonationAlertTemplate, 'elements'>>;
+  }): Promise<DonationAlertTemplate | null> {
+    const template = await this.prisma.donationAlertTemplate.findFirst({
+      where,
+    });
+
+    if (!template) {
+      return null;
+    }
+
+    return this.donaitonAlertTemplateMapper.fromDbToApp(template);
   }
 
   async findMany({
     where,
   }: {
-    where: Partial<DonationAlertTemplate>;
+    where: Partial<Omit<DonationAlertTemplate, 'elements'>>;
   }): Promise<DonationAlertTemplate[]> {
-    return this.prisma.donationAlertTemplate.findMany({
+    const templates = await this.prisma.donationAlertTemplate.findMany({
       where,
+    });
+
+    return templates.map((template) => {
+      return this.donaitonAlertTemplateMapper.fromDbToApp(template);
     });
   }
 
   async findManyWithDonationAlert({
     where,
   }: {
-    where: Partial<DonationAlertTemplate>;
+    where: Partial<Omit<DonationAlertTemplate, 'elements'>>;
   }): Promise<DonationAlertTemplateWithDonationAlert[]> {
-    return this.prisma.donationAlertTemplate.findMany({
+    const templates = await this.prisma.donationAlertTemplate.findMany({
       where,
       include: {
         donationAlert: true,
       },
     });
-  }
 
-  async findManyWithNested({
-    where,
-  }: {
-    where: Partial<DonationAlertTemplate>;
-  }): Promise<DonationAlertTemplateWithNested[]> {
-    const data = await this.prisma.donationAlertTemplate.findMany({
-      where,
-      include: {
-        uiTextElements: true,
-      },
+    return templates.map((template) => {
+      return this.donaitonAlertTemplateMapper.fromDbToApp(template);
     });
-
-    return data.map((template) => ({
-      ...template,
-      uiTextElements: template.uiTextElements.map((templateText) =>
-        this.uiTextElementTransformer.fromDbToApp(templateText),
-      ),
-    }));
   }
 }

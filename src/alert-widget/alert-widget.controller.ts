@@ -17,12 +17,9 @@ export class AlertWidgetController {
   constructor(private readonly alertWidgetService: AlertWidgetService) {}
 
   @Get()
-  async findMany(
-    @Query('with-relations') withRelations: boolean,
-    @UserId() userId: ID,
-  ) {
-    if (withRelations) {
-      return this.alertWidgetService.findManyWithRelations({ userId });
+  async findMany(@Query('include') include: 'nested', @UserId() userId: ID) {
+    if (include === 'nested') {
+      return this.alertWidgetService.findManyWithNested({ userId });
     }
 
     return this.alertWidgetService.findMany({ userId });

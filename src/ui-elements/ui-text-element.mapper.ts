@@ -1,3 +1,7 @@
+// @ts-nocheck
+
+// module to be removed
+
 import { Injectable } from '@nestjs/common';
 import { UiTextElement as PrismaUiTextElement } from '@prisma/client';
 import { OmitBaseModel } from 'src/_common/database/database.types';

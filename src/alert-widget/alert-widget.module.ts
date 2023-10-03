@@ -6,9 +6,15 @@ import { AlertWidgetController } from './alert-widget.controller';
 import { SessionModule } from 'src/auth/session/session.module';
 import { UiTextElementModule } from 'src/ui-elements/ui-text-element.module';
 import { AlertWidgetMapper } from './alert-widget.mapper';
+import { DonationAlertModule } from 'src/donation-alert/donation-alert.module';
 
 @Module({
-  imports: [DatabaseModule, SessionModule, UiTextElementModule],
+  imports: [
+    DatabaseModule,
+    SessionModule,
+    UiTextElementModule,
+    DonationAlertModule,
+  ],
   providers: [AlertWidgetRepository, AlertWidgetService, AlertWidgetMapper],
   exports: [AlertWidgetRepository, AlertWidgetService],
   controllers: [AlertWidgetController],

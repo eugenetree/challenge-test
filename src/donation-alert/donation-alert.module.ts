@@ -20,7 +20,7 @@ import { DonationAlertMapper } from './donation-alert.mapper';
     DonationAlertService,
     DonationAlertMapper,
   ],
-  exports: [DonationAlertRepository, DonationAlertService],
+  exports: [DonationAlertRepository, DonationAlertService, DonationAlertMapper],
   controllers: [DonationAlertController],
 })
 export class DonationAlertModule {}

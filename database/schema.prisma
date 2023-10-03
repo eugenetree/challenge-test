@@ -96,11 +96,11 @@ model DonationAlert {
   isEnabled      Boolean
   duration       Int
 
-  user                  User                   @relation(fields: [userId], references: [id])
-  userId                String
-  alertWidget           AlertWidget            @relation(fields: [alertWidgetId], references: [id])
-  alertWidgetId         String
-  donationAlertTemplate DonationAlertTemplate?
+  user          User                   @relation(fields: [userId], references: [id])
+  userId        String
+  alertWidget   AlertWidget            @relation(fields: [alertWidgetId], references: [id])
+  alertWidgetId String
+  template      DonationAlertTemplate?
 }
 
 //
@@ -110,14 +110,15 @@ model DonationAlertTemplate {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  name String?
+  name     String?
+  elements String  @db.Text
 
   user            User          @relation(fields: [userId], references: [id])
   userId          String
   donationAlert   DonationAlert @relation(fields: [donationAlertId], references: [id])
   donationAlertId String        @unique
 
-  uiTextElements UiTextElement[]
+  // uiTextElements UiTextElement[]
 }
 
 //
@@ -133,8 +134,8 @@ model UiTextElement {
   animationConfig String @db.Text
   positionConfig  String @db.Text
 
-  donationAlertTemplate   DonationAlertTemplate? @relation(fields: [donationAlertTemplateId], references: [id])
-  donationAlertTemplateId String?
+  // donationAlertTemplate   DonationAlertTemplate? @relation(fields: [donationAlertTemplateId], references: [id])
+  // donationAlertTemplateId String?
 }
 
 //

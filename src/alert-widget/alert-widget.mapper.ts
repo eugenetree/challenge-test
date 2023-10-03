@@ -1,22 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { AlertWidgetWithRelations } from './alert-widget';
-import { UiTextElementMapper } from 'src/ui-elements/ui-text-element.mapper';
-import { omit } from 'lodash';
+import { AlertWidgetWithNested } from './alert-widget';
+import { DonationAlertMapper } from 'src/donation-alert/donation-alert.mapper';
 
 const prismaRequest = Prisma.validator<Prisma.AlertWidgetArgs>()({
   include: {
     donationAlerts: {
       include: {
-        donationAlertTemplate: {
-          include: { uiTextElements: true },
-        },
+        template: true,
       },
     },
   },
 });
 
-type PrismaAlertWidgetWithRelations = Prisma.AlertWidgetGetPayload<
+type PrismaAlertWidgetWithNested = Prisma.AlertWidgetGetPayload<
   typeof prismaRequest
 >;
 
@@ -24,27 +21,16 @@ type PrismaAlertWidgetWithRelations = Prisma.AlertWidgetGetPayload<
 // do type overriding in repository and then send widgets to mapper
 @Injectable()
 export class AlertWidgetMapper {
-  constructor(private readonly uiTextElementMapper: UiTextElementMapper) {}
+  constructor(private readonly donationAlertMapper: DonationAlertMapper) {}
 
-  fromDbToApp(
-    alertWidget: PrismaAlertWidgetWithRelations,
-  ): AlertWidgetWithRelations {
+  fromDbToAppWithNested(
+    widget: PrismaAlertWidgetWithNested,
+  ): AlertWidgetWithNested {
     return {
-      ...alertWidget,
-      donationAlerts: alertWidget.donationAlerts.map((donationAlert) => {
-        const { donationAlertTemplate } = donationAlert;
-        const { uiTextElements } = donationAlertTemplate!;
-
-        return {
-          ...omit(donationAlert, 'donationAlertTemplate'),
-          template: {
-            ...omit(donationAlertTemplate, 'uiTextElements'),
-            uiTextElements: uiTextElements.map((uiTextElement) =>
-              this.uiTextElementMapper.fromDbToApp(uiTextElement),
-            ),
-          },
-        };
-      }),
+      ...widget,
+      donationAlerts: widget.donationAlerts.map((donationAlert) =>
+        this.donationAlertMapper.fromDbToAppWithTemplate(donationAlert),
+      ),
     };
   }
 }

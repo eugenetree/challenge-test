@@ -1,18 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { DonationAlert as PrismaDonationAlert, Prisma } from '@prisma/client';
-import { UiTextElementMapper } from 'src/ui-elements/ui-text-element.mapper';
-import { omit } from 'lodash';
-import { DonationAlertWithRelations, DonationAlert } from './donation-alert';
+import { DonationAlertWithTemplate, DonationAlert } from './donation-alert';
+import { DonationAlertTemplateMapper } from 'src/donation-alert-template/donation-alert-template.mapper';
 
 const prismaRequest = Prisma.validator<Prisma.DonationAlertArgs>()({
   include: {
-    donationAlertTemplate: {
-      include: { uiTextElements: true },
-    },
+    template: true,
   },
 });
 
-type PrismaDonationAlertWithRelations = Prisma.DonationAlertGetPayload<
+type PrismaDonationAlertWithTemplate = Prisma.DonationAlertGetPayload<
   typeof prismaRequest
 >;
 
@@ -20,21 +17,16 @@ type PrismaDonationAlertWithRelations = Prisma.DonationAlertGetPayload<
 // do type overriding in repository and then send widgets to mapper
 @Injectable()
 export class DonationAlertMapper {
-  constructor(private readonly uiTextElementMapper: UiTextElementMapper) {}
-  fromDbToAppWithRelations(
-    donationAlert: PrismaDonationAlertWithRelations,
-  ): DonationAlertWithRelations {
-    const { donationAlertTemplate } = donationAlert;
-    const { uiTextElements } = donationAlertTemplate!;
+  constructor(
+    private readonly donationAlertTemplateMapper: DonationAlertTemplateMapper,
+  ) {}
 
+  fromDbToAppWithTemplate(
+    alert: PrismaDonationAlertWithTemplate,
+  ): DonationAlertWithTemplate {
     return {
-      ...omit(donationAlert, 'donationAlertTemplate'),
-      template: {
-        ...omit(donationAlertTemplate, 'uiTextElements'),
-        uiTextElements: uiTextElements.map((uiTextElement) =>
-          this.uiTextElementMapper.fromDbToApp(uiTextElement),
-        ),
-      },
+      ...alert,
+      template: this.donationAlertTemplateMapper.fromDbToApp(alert.template!),
     };
   }
 }

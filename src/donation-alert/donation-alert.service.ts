@@ -3,7 +3,7 @@ import { ID } from 'src/_common/types';
 import { DonationAlertRepository } from './donation-alert.repository';
 import { DonationAlertTemplateService } from 'src/donation-alert-template/donation-alert-template.service';
 import { UiTextElementMapper } from 'src/ui-elements/ui-text-element.mapper';
-import { DonationAlert, DonationAlertWithRelations } from './donation-alert';
+import { DonationAlert, DonationAlertWithTemplate } from './donation-alert';
 import { DonationAlertMapper } from './donation-alert.mapper';
 
 @Injectable()
@@ -65,22 +65,16 @@ export class DonationAlertService {
     alertWidgetId: ID;
     includeRelations?: boolean;
   }): Promise<DonationAlert | null> {
-    const alert = await this.donationAlertRepository.findOne({
+    return this.donationAlertRepository.findOne({
       where: {
         id: alertId,
         alertWidgetId,
         userId,
       },
     });
-
-    if (!alert) {
-      return null;
-    }
-
-    return alert;
   }
 
-  async findOneWithRelations({
+  async findOneWithTemplate({
     userId,
     alertId,
     alertWidgetId,
@@ -88,19 +82,13 @@ export class DonationAlertService {
     userId: ID;
     alertId: ID;
     alertWidgetId: ID;
-  }): Promise<DonationAlertWithRelations | null> {
-    const alert = await this.donationAlertRepository.findOneWithRelations({
+  }): Promise<DonationAlertWithTemplate | null> {
+    return this.donationAlertRepository.findOneWithTemplate({
       where: {
         id: alertId,
         alertWidgetId,
         userId,
       },
     });
-
-    if (!alert) {
-      return null;
-    }
-
-    return this.donationAlertMapper.fromDbToAppWithRelations(alert);
   }
 }

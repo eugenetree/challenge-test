@@ -3,7 +3,7 @@ import { ID } from 'src/_common/types';
 import { AlertWidgetRepository } from './alert-widget.repository';
 import { PrismaService } from 'src/_common/database/prisma.service';
 import { UiTextElementMapper } from 'src/ui-elements/ui-text-element.mapper';
-import { AlertWidgetWithRelations } from './alert-widget';
+import { AlertWidgetWithNested } from './alert-widget';
 import { AlertWidget } from '@prisma/client';
 
 @Injectable()
@@ -44,12 +44,12 @@ export class AlertWidgetService {
     return this.alertWidgetRepository.findMany({ where: { userId } });
   }
 
-  async findManyWithRelations({
+  async findManyWithNested({
     userId,
   }: {
     userId: ID;
-  }): Promise<AlertWidgetWithRelations[]> {
-    return this.alertWidgetRepository.findManyWithRelations({
+  }): Promise<AlertWidgetWithNested[]> {
+    return this.alertWidgetRepository.findManyWithNested({
       where: { userId },
     });
   }

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/_common/database/prisma.service';
-import { DonationAlert, DonationAlertWithRelations } from './donation-alert';
+import { DonationAlert, DonationAlertWithTemplate } from './donation-alert';
 import { Optional } from 'src/_common/types';
 import { OmitBaseModel } from 'src/_common/database/database.types';
 import { Donation } from 'src/donation/donation';
@@ -26,21 +26,32 @@ export class DonationAlertRepository {
     return this.prisma.donationAlert.create({ data });
   };
 
-  findOne({ where }: { where: Partial<DonationAlert> }) {
+  findOne({
+    where,
+  }: {
+    where: Partial<DonationAlert>;
+  }): Promise<DonationAlert | null> {
     return this.prisma.donationAlert.findFirst({
-      where: { ...where, donationAlertTemplate: { isNot: null } },
+      where: { ...where, template: { isNot: null } },
     });
   }
 
-  findOneWithRelations({
+  // 'as' is needed here because of the prisma runtime types validations
+  async findOneWithTemplate({
     where,
   }: {
-    where: Partial<DonationAlertWithRelations>;
-  }) {
-    return this.prisma.donationAlert.findFirst({
-      where: { ...where, donationAlertTemplate: { isNot: null } },
-      include: { donationAlertTemplate: { include: { uiTextElements: true } } },
+    where: Partial<DonationAlertWithTemplate | null>;
+  }): Promise<DonationAlertWithTemplate | null> {
+    const alert = await this.prisma.donationAlert.findFirst({
+      where: { ...where, template: { isNot: null } },
+      include: { template: true },
     });
+
+    if (!alert) {
+      return null;
+    }
+
+    return this.donationAlertMapper.fromDbToAppWithTemplate(alert);
   }
 
   findMany = async ({

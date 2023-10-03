@@ -9,7 +9,6 @@ import { ID } from 'src/_common/types';
 import {
   DonationAlertTemplate,
   DonationAlertTemplateWithDonationAlert,
-  DonationAlertTemplateWithNested,
 } from './donation-alert-template.types';
 
 @Injectable()
@@ -33,26 +32,11 @@ export class DonationAlertTemplateService {
         name: defaultTemplate.name,
         userId,
         donationAlertId,
+        elements: defaultTemplate.elements,
       },
     });
 
-    const createdUiTextElements = await this.uiTextElementRepository.createMany(
-      {
-        data: defaultTemplate.uiTextElements.map((element) => ({
-          name: element.name,
-          text: element.text,
-          styleConfig: element.styleConfig,
-          animationConfig: element.animationConfig,
-          positionConfig: element.positionConfig,
-          donationAlertTemplateId: createdTemplate.id,
-        })),
-      },
-    );
-
-    return {
-      template: createdTemplate,
-      uiTextElements: createdUiTextElements,
-    };
+    return createdTemplate;
   }
 
   async findMany({ userId }: { userId: ID }): Promise<DonationAlertTemplate[]> {
@@ -65,16 +49,6 @@ export class DonationAlertTemplateService {
     userId: ID;
   }): Promise<DonationAlertTemplateWithDonationAlert[]> {
     return this.donationAlertTemplateRepository.findManyWithDonationAlert({
-      where: { userId },
-    });
-  }
-
-  async findManyWithNested({
-    userId,
-  }: {
-    userId: ID;
-  }): Promise<DonationAlertTemplateWithNested[]> {
-    return this.donationAlertTemplateRepository.findManyWithNested({
       where: { userId },
     });
   }

@@ -25,11 +25,11 @@ export class DonationAlertController {
   findOne(
     @Param('alert-id') alertId: string,
     @Param('alert-widget-id') alertWidgetId,
-    @Query('with-relations') withRelations: boolean,
+    @Query('include') include: 'template',
     @UserId() userId: ID,
   ) {
-    if (withRelations) {
-      return this.donationAlertService.findOneWithRelations({
+    if (include === 'template') {
+      return this.donationAlertService.findOneWithTemplate({
         alertId,
         alertWidgetId,
         userId,
