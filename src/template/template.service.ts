@@ -17,6 +17,11 @@ export class TemplateService {
           key: 'name',
           defaultValue: 'Патрік',
         },
+        {
+          key: 'message',
+          defaultValue:
+            'Привіт брате, дякую тобі за поток, дійсно дуже круто. Продовжуй в тому ж дусі.',
+        },
       ],
     };
   }

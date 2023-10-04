@@ -19,8 +19,9 @@ export const defaultDonationAlertTemplates: Record<
     elements: {
       texts: [
         {
+          id: '0',
           name: 'Заголовок',
-          text: '{sum} закинув {amount}',
+          text: '{name} закинув {amount} {currency}',
           styleConfig: {
             fontSize: 45,
             fontFamily: 'Arial',
@@ -36,15 +37,16 @@ export const defaultDonationAlertTemplates: Record<
             out: 'fade',
           },
           positionConfig: {
-            top: 0,
-            left: 0,
-            width: 100,
-            height: 100,
+            top: 300,
+            left: 25,
+            width: 750,
+            height: 70,
           },
         },
         {
+          id: '1',
           name: 'Текст донату',
-          text: 'Привіт брате, дякую тобі за поток, дійсно дуже круто. Продовжуй в тому ж дусі.',
+          text: '{message}',
           styleConfig: {
             fontSize: 25,
             fontFamily: 'Arial',
@@ -60,17 +62,18 @@ export const defaultDonationAlertTemplates: Record<
             out: 'fade',
           },
           positionConfig: {
-            top: 0,
-            left: 0,
-            width: 100,
-            height: 100,
+            top: 375,
+            left: 25,
+            width: 750,
+            height: 200,
           },
         },
       ],
       images: [
         {
+          id: '0',
           name: 'Зображення',
-          src: 'https://i.gifer.com/xv.gif  ',
+          src: 'https://i.gifer.com/xv.gif',
           styleConfig: {
             width: 100,
             height: 100,
@@ -80,10 +83,10 @@ export const defaultDonationAlertTemplates: Record<
             out: 'fade',
           },
           positionConfig: {
-            top: 0,
-            left: 0,
-            width: 100,
-            height: 100,
+            top: 25,
+            left: 275,
+            width: 250,
+            height: 250,
           },
         },
       ],

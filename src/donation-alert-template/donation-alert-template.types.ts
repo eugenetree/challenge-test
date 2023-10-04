@@ -3,6 +3,7 @@ import { ID } from 'src/_common/types';
 import { DonationAlert } from 'src/donation-alert/donation-alert';
 
 export type UiTextElement = {
+  id: ID;
   name: string;
   text: string;
   styleConfig: {
@@ -28,6 +29,7 @@ export type UiTextElement = {
 };
 
 export type UiImageElement = {
+  id: ID;
   name: string;
   src: string;
   styleConfig: {
