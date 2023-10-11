@@ -1,6 +1,9 @@
-import { BaseModel } from 'src/_common/database/database.types';
+import { BaseModel, OmitBaseModel } from 'src/_common/database/database.types';
 import { ID } from 'src/_common/types';
-import { DonationAlertTemplate } from 'src/donation-alert-template/donation-alert-template.types';
+import {
+  DonationAlertTemplate,
+  DonationAlertTemplateCreateInput,
+} from 'src/donation-alert-template/donation-alert-template.types';
 
 export type DonationAlert = BaseModel & {
   name: string;
@@ -13,6 +16,12 @@ export type DonationAlert = BaseModel & {
   alertWidgetId: ID;
 };
 
+export type DonationAlertWithTemplateCreateInput = OmitBaseModel<
+  DonationAlert,
+  'name'
+> & {
+  template: DonationAlertTemplateCreateInput;
+};
 export type DonationAlertWithTemplate = DonationAlert & {
   template: DonationAlertTemplate;
 };

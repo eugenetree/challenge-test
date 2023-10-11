@@ -3,8 +3,16 @@ import { ID } from 'src/_common/types';
 import { DonationAlertRepository } from './donation-alert.repository';
 import { DonationAlertTemplateService } from 'src/donation-alert-template/donation-alert-template.service';
 import { UiTextElementMapper } from 'src/ui-elements/ui-text-element.mapper';
-import { DonationAlert, DonationAlertWithTemplate } from './donation-alert';
+import {
+  DonationAlert,
+  DonationAlertWithTemplate,
+  DonationAlertWithTemplateCreateInput,
+} from './donation-alert.types';
 import { DonationAlertMapper } from './donation-alert.mapper';
+import { CreateDonationAlertDto } from './donation-alert.dto';
+import { DonationAlertTemplate } from '@prisma/client';
+import { OmitBaseModel } from 'src/_common/database/database.types';
+import { DonationAlertTemplateCreateInput } from 'src/donation-alert-template/donation-alert-template.types';
 
 @Injectable()
 export class DonationAlertService {
@@ -15,44 +23,29 @@ export class DonationAlertService {
     private readonly textElementMapper: UiTextElementMapper,
   ) {}
 
-  async create({
-    name,
-    userId,
-    alertWidgetId,
-  }: {
-    name?: string;
-    userId: ID;
-    alertWidgetId: ID;
-  }): Promise<DonationAlert> {
-    let preparedName = name;
-
-    if (!name) {
-      const widgetsInGroupCount = await this.donationAlertRepository.count({
-        where: { userId, alertWidgetId },
-      });
-
-      preparedName = `Сповіщення № ${widgetsInGroupCount + 1}`;
-    } else {
-      preparedName = 'Сповіщення № 1';
-    }
+  async createWithTemplate({
+    template,
+    ...alert
+  }: DonationAlertWithTemplateCreateInput): Promise<DonationAlertWithTemplate> {
+    const alertName =
+      alert.name ||
+      (await this.generateAlertName({ alertWidgetId: alert.alertWidgetId }));
 
     const createdAlert = await this.donationAlertRepository.create({
       data: {
-        name: preparedName,
-        minAmount: 1,
-        isEnabled: true,
-        duration: 10,
-        userId,
-        alertWidgetId,
+        ...alert,
+        name: alertName,
       },
     });
 
-    await this.donationAlertTemlateService.createDefaultTemplate({
-      userId,
-      donationAlertId: createdAlert.id,
+    const createdTemplate = await this.donationAlertTemlateService.create({
+      ...template,
     });
 
-    return createdAlert;
+    return {
+      ...createdAlert,
+      template: createdTemplate,
+    };
   }
 
   async findOne({
@@ -90,5 +83,16 @@ export class DonationAlertService {
         userId,
       },
     });
+  }
+
+  private async generateAlertName({
+    alertWidgetId,
+  }: {
+    alertWidgetId: ID;
+  }): Promise<string> {
+    const alertsCount = await this.donationAlertRepository.count({
+      where: { alertWidgetId },
+    });
+    return `Сповіщення № ${alertsCount + 1}`;
   }
 }

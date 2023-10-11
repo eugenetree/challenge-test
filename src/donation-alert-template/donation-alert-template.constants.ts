@@ -9,7 +9,7 @@ export const defaultDonationAlertTemplates: Record<
   TemplateId,
   DonationAlertTemplate
 > = {
-  ['default/main']: {
+  ['default']: {
     id: '-1',
     createdAt: new Date('1970-01-01T00:00:00.000Z'),
     updatedAt: new Date('1970-01-01T00:00:00.000Z'),

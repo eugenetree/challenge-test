@@ -4,7 +4,7 @@ import { DonationAlertTemplate } from 'src/donation-alert-template/donation-aler
 import {
   DonationAlert,
   DonationAlertWithTemplate,
-} from 'src/donation-alert/donation-alert';
+} from 'src/donation-alert/donation-alert.type';
 import { UiTextElement } from 'src/ui-elements/ui-text-element';
 
 export type AlertWidget = BaseModel & {

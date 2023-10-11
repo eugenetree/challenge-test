@@ -1,6 +1,6 @@
-import { BaseModel } from 'src/_common/database/database.types';
+import { BaseModel, OmitBaseModel } from 'src/_common/database/database.types';
 import { ID } from 'src/_common/types';
-import { DonationAlert } from 'src/donation-alert/donation-alert';
+import { DonationAlert } from 'src/donation-alert/donation-alert.type';
 
 export type UiTextElement = {
   id: ID;
@@ -62,6 +62,7 @@ export type DonationAlertTemplateWithDonationAlert = DonationAlertTemplate & {
   donationAlert: DonationAlert;
 };
 
-// export type DonationAlertTemplateWithNested = DonationAlertTemplate & {
-//   uiTextElements: UiTextElement[];
-// };
+export type DonationAlertTemplateCreateInput = OmitBaseModel<
+  DonationAlertTemplate,
+  'name'
+>;

@@ -1,15 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import {
   defaultDonationAlertPositionConfigs,
-  defaultDonationAlertTemplates,
+  defaultDonationAlertTemplates as globalDonationAlertTemplates,
 } from './donation-alert-template.constants';
 import { DonationAlertTemplateRepository } from './donation-alert-template.repository';
 import { UiTextElementRepository } from 'src/ui-elements/ui-text-element.repository';
 import { ID } from 'src/_common/types';
 import {
   DonationAlertTemplate,
+  DonationAlertTemplateCreateInput,
   DonationAlertTemplateWithDonationAlert,
 } from './donation-alert-template.types';
+import { OmitBaseModel } from 'src/_common/database/database.types';
 
 @Injectable()
 export class DonationAlertTemplateService {
@@ -18,6 +20,22 @@ export class DonationAlertTemplateService {
     private readonly uiTextElementRepository: UiTextElementRepository,
   ) {}
 
+  async create({
+    name,
+    elements,
+    userId,
+    donationAlertId,
+  }: DonationAlertTemplateCreateInput) {
+    return await this.donationAlertTemplateRepository.create({
+      data: {
+        name: name || this.getDefaultTemplate().name,
+        elements,
+        userId,
+        donationAlertId,
+      },
+    });
+  }
+
   async createDefaultTemplate({
     userId,
     donationAlertId,
@@ -25,9 +43,9 @@ export class DonationAlertTemplateService {
     userId: ID;
     donationAlertId: ID;
   }) {
-    const defaultTemplate = defaultDonationAlertTemplates['default/main'];
+    const defaultTemplate = this.getDefaultTemplate();
 
-    const createdTemplate = await this.donationAlertTemplateRepository.create({
+    return await this.donationAlertTemplateRepository.create({
       data: {
         name: defaultTemplate.name,
         userId,
@@ -35,8 +53,6 @@ export class DonationAlertTemplateService {
         elements: defaultTemplate.elements,
       },
     });
-
-    return createdTemplate;
   }
 
   async findMany({ userId }: { userId: ID }): Promise<DonationAlertTemplate[]> {
@@ -53,12 +69,16 @@ export class DonationAlertTemplateService {
     });
   }
 
-  async getDefaultTemplates(): Promise<DonationAlertTemplate[]> {
-    const defaultTemplates = Object.values(defaultDonationAlertTemplates);
-    return defaultTemplates;
+  async getGlobalTemplates(): Promise<DonationAlertTemplate[]> {
+    const globalTemplates = Object.values(globalDonationAlertTemplates);
+    return globalTemplates;
   }
 
   async getDefaultPositionConfigs() {
     return defaultDonationAlertPositionConfigs;
+  }
+
+  private getDefaultTemplate() {
+    return globalDonationAlertTemplates['default'];
   }
 }

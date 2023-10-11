@@ -26,7 +26,7 @@ export class DonationAlertTemplateController {
     }
 
     if (type === 'default') {
-      return this.donationAlertTemplateService.getDefaultTemplates();
+      return this.donationAlertTemplateService.getGlobalTemplates();
     }
 
     return this.donationAlertTemplateService.findMany({ userId });

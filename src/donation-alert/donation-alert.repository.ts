@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/_common/database/prisma.service';
-import { DonationAlert, DonationAlertWithTemplate } from './donation-alert';
+import {
+  DonationAlert,
+  DonationAlertWithTemplate,
+} from './donation-alert.types';
 import { Optional } from 'src/_common/types';
 import { OmitBaseModel } from 'src/_common/database/database.types';
 import { Donation } from 'src/donation/donation';
