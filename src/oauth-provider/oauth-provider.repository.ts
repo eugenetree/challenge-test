@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/_common/database/prisma.service';
 import { OauthProvider } from './oauth-provider';
 import { Optional } from 'src/_common/types';
+import { OmitBaseModel } from 'src/_common/database/database.types';
 
 @Injectable()
 export class OauthProviderRepository {
@@ -10,7 +11,7 @@ export class OauthProviderRepository {
   create = async ({
     data,
   }: {
-    data: Optional<OauthProvider, 'id'>;
+    data: OmitBaseModel<OauthProvider>;
   }): Promise<OauthProvider> => {
     return this.prisma.oauthProvider.create({ data });
   };

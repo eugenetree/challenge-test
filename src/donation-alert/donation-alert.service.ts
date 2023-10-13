@@ -6,16 +6,20 @@ import { UiTextElementMapper } from 'src/ui-elements/ui-text-element.mapper';
 import {
   DonationAlert,
   DonationAlertWithTemplate,
-  DonationAlertWithTemplateCreateInput,
+  DonationAlertWithCustomTemplateCreateInput,
+  DonationAlertCreateInput,
 } from './donation-alert.types';
 import { DonationAlertMapper } from './donation-alert.mapper';
-import { CreateDonationAlertDto } from './donation-alert.dto';
-import { DonationAlertTemplate } from '@prisma/client';
 import { OmitBaseModel } from 'src/_common/database/database.types';
-import { DonationAlertTemplateCreateInput } from 'src/donation-alert-template/donation-alert-template.types';
 
 @Injectable()
 export class DonationAlertService {
+  private readonly alertDefaultFields = {
+    minAmount: 1,
+    duration: 10,
+    isEnabled: true,
+  };
+
   constructor(
     private readonly donationAlertRepository: DonationAlertRepository,
     private readonly donationAlertTemlateService: DonationAlertTemplateService,
@@ -23,16 +27,44 @@ export class DonationAlertService {
     private readonly textElementMapper: UiTextElementMapper,
   ) {}
 
-  async createWithTemplate({
+  async createDefault(
+    alert: DonationAlertCreateInput,
+  ): Promise<DonationAlertWithTemplate> {
+    const alertName = await this.generateAlertName({
+      alertWidgetId: alert.alertWidgetId,
+    });
+
+    const createdAlert = await this.donationAlertRepository.create({
+      data: {
+        ...this.alertDefaultFields,
+        ...alert,
+        name: alertName,
+      },
+    });
+
+    const createdTemplate =
+      await this.donationAlertTemlateService.createDefault({
+        donationAlertId: createdAlert.id,
+        userId: createdAlert.userId,
+      });
+
+    return {
+      ...createdAlert,
+      template: createdTemplate,
+    };
+  }
+
+  async createWithCustomTemplate({
     template,
     ...alert
-  }: DonationAlertWithTemplateCreateInput): Promise<DonationAlertWithTemplate> {
+  }: DonationAlertWithCustomTemplateCreateInput): Promise<DonationAlertWithTemplate> {
     const alertName =
       alert.name ||
       (await this.generateAlertName({ alertWidgetId: alert.alertWidgetId }));
 
     const createdAlert = await this.donationAlertRepository.create({
       data: {
+        ...this.alertDefaultFields,
         ...alert,
         name: alertName,
       },
@@ -40,6 +72,8 @@ export class DonationAlertService {
 
     const createdTemplate = await this.donationAlertTemlateService.create({
       ...template,
+      donationAlertId: createdAlert.id,
+      userId: createdAlert.userId,
     });
 
     return {

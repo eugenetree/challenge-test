@@ -5,6 +5,7 @@ import { OauthProviderRepository } from 'src/oauth-provider/oauth-provider.repos
 import { DonationAlertService } from 'src/donation-alert/donation-alert.service';
 import { AlertWidgetService } from 'src/alert-widget/alert-widget.service';
 import { User } from './user';
+import { DonationAlertRepository } from 'src/donation-alert/donation-alert.repository';
 
 @Injectable()
 export class UserService {
@@ -13,6 +14,7 @@ export class UserService {
     private readonly oauthProviderRepository: OauthProviderRepository,
     private readonly alertWidgetService: AlertWidgetService,
     private readonly donationAlertService: DonationAlertService,
+    private readonly donationAlertRepository: DonationAlertRepository,
   ) {}
 
   createViaOauth = async ({
@@ -39,7 +41,7 @@ export class UserService {
       userId: createdUser.id,
     });
 
-    await this.donationAlertService.create({
+    await this.donationAlertService.createDefault({
       userId: createdUser.id,
       alertWidgetId: createdAlertWidget.id,
     });

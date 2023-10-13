@@ -1,9 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { DonationAlert as PrismaDonationAlert, Prisma } from '@prisma/client';
-import {
-  DonationAlertWithTemplate,
-  DonationAlert,
-} from './donation-alert.type';
+import { DonationAlertWithTemplate } from './donation-alert.types';
 import { DonationAlertTemplateMapper } from 'src/donation-alert-template/donation-alert-template.mapper';
 
 const prismaRequest = Prisma.validator<Prisma.DonationAlertArgs>()({

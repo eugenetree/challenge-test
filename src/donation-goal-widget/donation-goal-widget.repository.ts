@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/_common/database/prisma.service';
 import { DonationGoalWidget } from './donation-goal-widget';
-import { Optional } from 'src/_common/types';
+import { OmitBaseModel } from 'src/_common/database/database.types';
 
 @Injectable()
 export class DonationAlertRepository {
@@ -10,7 +10,7 @@ export class DonationAlertRepository {
   create = async ({
     data,
   }: {
-    data: Optional<DonationGoalWidget, 'id'>;
+    data: OmitBaseModel<DonationGoalWidget>;
   }): Promise<DonationGoalWidget> => {
     return this.prisma.donationGoalWidget.create({ data });
   };

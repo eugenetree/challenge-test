@@ -1,4 +1,4 @@
-import { ID, Optional } from '../types';
+import { ID } from '../types';
 
 export type BaseModel = {
   id: ID;

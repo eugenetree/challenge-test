@@ -7,6 +7,7 @@ export const createDonationAlertTemplateZodSchema = z.object({
     texts: z
       .array(
         z.object({
+          id: z.string(),
           name: z.string(),
           text: z.string(),
           styleConfig: z.object({
@@ -35,6 +36,7 @@ export const createDonationAlertTemplateZodSchema = z.object({
     images: z
       .array(
         z.object({
+          id: z.string(),
           name: z.string(),
           src: z.string(),
           styleConfig: z.object({

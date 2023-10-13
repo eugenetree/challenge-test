@@ -36,7 +36,7 @@ export class DonationAlertTemplateService {
     });
   }
 
-  async createDefaultTemplate({
+  async createDefault({
     userId,
     donationAlertId,
   }: {

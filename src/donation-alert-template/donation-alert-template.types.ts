@@ -1,6 +1,6 @@
 import { BaseModel, OmitBaseModel } from 'src/_common/database/database.types';
 import { ID } from 'src/_common/types';
-import { DonationAlert } from 'src/donation-alert/donation-alert.type';
+import { DonationAlert } from 'src/donation-alert/donation-alert.types';
 
 export type UiTextElement = {
   id: ID;

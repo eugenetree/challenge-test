@@ -25,7 +25,7 @@ export class DonationAlertController {
     @UserId() userId: ID,
     @Body() dto: CreateDonationAlertDto,
   ): Promise<DonationAlert> {
-    return this.donationAlertService.createWithTemplate({
+    return this.donationAlertService.createWithCustomTemplate({
       ...dto,
       alertWidgetId,
       userId,

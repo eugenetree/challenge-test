@@ -6,7 +6,7 @@ import {
 } from 'src/_common/socket/socket.events';
 import { SocketService } from 'src/_common/socket/socket.service';
 import { ID } from 'src/_common/types';
-import { DonationAlert } from 'src/donation-alert/donation-alert.type';
+import { DonationAlert } from 'src/donation-alert/donation-alert.types';
 import { DonationAlertRepository } from 'src/donation-alert/donation-alert.repository';
 import { Donation } from 'src/donation/donation';
 

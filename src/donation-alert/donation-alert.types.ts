@@ -1,5 +1,5 @@
 import { BaseModel, OmitBaseModel } from 'src/_common/database/database.types';
-import { ID } from 'src/_common/types';
+import { ID, MakeNullableFieldsOptional } from 'src/_common/types';
 import {
   DonationAlertTemplate,
   DonationAlertTemplateCreateInput,
@@ -16,12 +16,20 @@ export type DonationAlert = BaseModel & {
   alertWidgetId: ID;
 };
 
-export type DonationAlertWithTemplateCreateInput = OmitBaseModel<
-  DonationAlert,
-  'name'
-> & {
-  template: DonationAlertTemplateCreateInput;
-};
+export type DonationAlertCreateInput = MakeNullableFieldsOptional<
+  OmitBaseModel<DonationAlert, 'name' | 'isEnabled' | 'duration'>
+>;
+
+export type DonationAlertWithCustomTemplateCreateInput =
+  MakeNullableFieldsOptional<
+    OmitBaseModel<DonationAlert, 'name' | 'isEnabled' | 'duration'> & {
+      template: Omit<
+        DonationAlertTemplateCreateInput,
+        'donationAlertId' | 'userId'
+      >;
+    }
+  >;
+
 export type DonationAlertWithTemplate = DonationAlert & {
   template: DonationAlertTemplate;
 };
