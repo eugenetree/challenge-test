@@ -24,7 +24,10 @@ export class AlertWidgetRepository {
   }: {
     where: Partial<AlertWidget>;
   }): Promise<AlertWidget[]> {
-    return this.prisma.alertWidget.findMany({ where });
+    return this.prisma.alertWidget.findMany({
+      where,
+      orderBy: { createdAt: 'asc' },
+    });
   }
 
   async findManyWithNested({
