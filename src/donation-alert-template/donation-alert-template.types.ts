@@ -11,7 +11,7 @@ export type UiTextElement = {
     fontFamily: string;
     fontWeight: string;
     fontStyle: string;
-    align: string;
+    textAlign: string;
     color: string;
     shadowColor: string;
     shadowSize: number;

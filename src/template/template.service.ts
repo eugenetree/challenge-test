@@ -7,19 +7,19 @@ export class TemplateService {
       donationAlert: [
         {
           key: 'amount',
-          defaultValue: '100',
+          value: '100',
         },
         {
           key: 'currency',
-          defaultValue: 'uah',
+          value: 'uah',
         },
         {
           key: 'name',
-          defaultValue: 'Патрік',
+          value: 'Патрік',
         },
         {
           key: 'message',
-          defaultValue:
+          value:
             'Привіт брате, дякую тобі за поток, дійсно дуже круто. Продовжуй в тому ж дусі.',
         },
       ],

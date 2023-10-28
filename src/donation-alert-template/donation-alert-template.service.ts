@@ -69,9 +69,8 @@ export class DonationAlertTemplateService {
     });
   }
 
-  async getGlobalTemplates(): Promise<DonationAlertTemplate[]> {
-    const globalTemplates = Object.values(globalDonationAlertTemplates);
-    return globalTemplates;
+  async getGlobalTemplates() {
+    return globalDonationAlertTemplates;
   }
 
   async getDefaultPositionConfigs() {
