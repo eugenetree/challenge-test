@@ -12,7 +12,7 @@ export type UiTextElement = {
     fontWeight: string;
     fontStyle: string;
     textAlign: string;
-    color: string;
+    textColor: string;
     shadowColor: string;
     shadowSize: number;
   };

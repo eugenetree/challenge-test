@@ -16,7 +16,7 @@ export const createDonationAlertTemplateZodSchema = z.object({
             fontWeight: z.string(),
             fontStyle: z.string(),
             textAlign: z.string(),
-            color: z.string(),
+            textColor: z.string(),
             shadowColor: z.string(),
             shadowSize: z.number(),
           }),
