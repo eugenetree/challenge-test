@@ -7,6 +7,7 @@ import {
 
 export type DonationAlert = BaseModel & {
   name: string;
+  alertCondition: 'random' | 'specificAmount' | 'minMaxAmount';
   minAmount: number | null;
   maxAmount: number | null;
   specificAmount: number | null;
@@ -17,18 +18,23 @@ export type DonationAlert = BaseModel & {
 };
 
 export type DonationAlertCreateInput = MakeNullableFieldsOptional<
-  OmitBaseModel<DonationAlert, 'name' | 'isEnabled' | 'duration'>
+  OmitBaseModel<DonationAlert, 'name' | 'isEnabled' | 'duration' | 'alertCondition'>
 >;
 
-export type DonationAlertWithCustomTemplateCreateInput =
-  MakeNullableFieldsOptional<
-    OmitBaseModel<DonationAlert, 'name' | 'isEnabled' | 'duration'> & {
-      template: Omit<
-        DonationAlertTemplateCreateInput,
-        'donationAlertId' | 'userId'
-      >;
-    }
-  >;
+export type DonationAlertWithCustomTemplateCreateInput = {
+  alert: MakeNullableFieldsOptional<OmitBaseModel<DonationAlert, 'name' | 'isEnabled' | 'duration'>>;
+  template: Omit<DonationAlertTemplateCreateInput, 'donationAlertId' | 'userId'>;
+}
+
+// export type DonationAlertWithCustomTemplateCreateInput =
+//   MakeNullableFieldsOptional<
+//     OmitBaseModel<DonationAlert, 'name' | 'isEnabled' | 'duration'> & {
+//       template: Omit<
+//         DonationAlertTemplateCreateInput,
+//         'donationAlertId' | 'userId'
+//       >;
+//     }
+//   >;
 
 export type DonationAlertWithTemplate = DonationAlert & {
   template: DonationAlertTemplate;

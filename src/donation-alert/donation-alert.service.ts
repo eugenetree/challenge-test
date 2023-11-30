@@ -34,10 +34,18 @@ export class DonationAlertService {
       alertWidgetId: alert.alertWidgetId,
     });
 
+    console.log('createdAlert', {
+      ...this.alertDefaultFields,
+      ...alert,
+      alertCondition: 'random',
+      name: alertName,
+    })
+
     const createdAlert = await this.donationAlertRepository.create({
       data: {
         ...this.alertDefaultFields,
         ...alert,
+        alertCondition: 'random',
         name: alertName,
       },
     });
@@ -55,9 +63,11 @@ export class DonationAlertService {
   }
 
   async createWithCustomTemplate({
+    alert,
     template,
-    ...alert
   }: DonationAlertWithCustomTemplateCreateInput): Promise<DonationAlertWithTemplate> {
+    console.log('debug', alert, template);
+
     const alertName =
       alert.name ||
       (await this.generateAlertName({ alertWidgetId: alert.alertWidgetId }));

@@ -16,6 +16,11 @@ const scopes = [
 export class AppController {
   constructor(private readonly alertWidgetRepository: AlertWidgetRepository) { }
 
+  // @Get('alert-widgets/:test/donation-alerts')
+  // async f() {
+  //   return 's'
+  // }
+
   @Get('ping')
   async pingGet() {
     return 'pong';

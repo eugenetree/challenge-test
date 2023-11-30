@@ -84,12 +84,19 @@ model Donation {
 
 //
 
+enum AlertCondition {
+  random
+  specificAmount
+  minMaxAmount
+}
+
 model DonationAlert {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   name           String
+  condition      AlertCondition
   minAmount      Int?
   maxAmount      Int?
   specificAmount Int?

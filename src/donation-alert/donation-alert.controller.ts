@@ -11,11 +11,11 @@ import { DonationAlertService } from './donation-alert.service';
 import { AuthSessionGuard } from 'src/auth/auth-session.guard';
 import { UserId } from 'src/auth/session/session.decorator';
 import { ID } from 'src/_common/types';
-import { DonationAlert } from './donation-alert.types';
+import { DonationAlert, DonationAlertWithTemplate } from './donation-alert.types';
 import { CreateDonationAlertDto } from './donation-alert.dto';
 
 @UseGuards(AuthSessionGuard)
-@Controller('alert-widgets/:alert-widget-id/donation-alerts')
+@Controller('alert-widgets/:alertWidgetId/donation-alerts')
 export class DonationAlertController {
   constructor(private readonly donationAlertService: DonationAlertService) {}
 
@@ -24,11 +24,14 @@ export class DonationAlertController {
     @Param('alertWidgetId') alertWidgetId: string,
     @UserId() userId: ID,
     @Body() dto: CreateDonationAlertDto,
-  ): Promise<DonationAlert> {
+  ): Promise<DonationAlertWithTemplate> {
     return this.donationAlertService.createWithCustomTemplate({
-      ...dto,
-      alertWidgetId,
-      userId,
+      alert: {
+        ...dto.alert,
+        userId,
+        alertWidgetId,
+      },
+      template: dto.template,
     });
   }
 
